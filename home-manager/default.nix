@@ -6,6 +6,7 @@
     ./shell
     ./wezterm
     ./stylix.nix
+    ./ssh.nix
   ];
 
   xdg.enable = true;
