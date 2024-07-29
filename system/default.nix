@@ -8,6 +8,7 @@
     ./kernel.nix
     ./bootloader.nix
     ./nvidia.nix
+    ./bluetooth.nix
     ./networking.nix
     ./shell.nix
     ./nix.nix
@@ -17,5 +18,6 @@
     ./users.nix
     ./packages.nix
     ./fonts.nix
+    ./stylix.nix
   ];
 }

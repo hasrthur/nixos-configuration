@@ -13,9 +13,14 @@
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    stylix = {
+      url = "github:danth/stylix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
-  outputs = { self, nixpkgs, disko, home-manager, ... }@inputs: 
+  outputs = { self, nixpkgs, disko, home-manager, stylix, ... }@inputs: 
     let
       username = "artur";
       args = { inherit inputs username; };
@@ -26,6 +31,8 @@
           specialArgs = args;
           modules = [
             ./system
+
+            stylix.nixosModules.stylix
             
             home-manager.nixosModules.home-manager
             {

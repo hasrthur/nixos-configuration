@@ -5,6 +5,7 @@
     ./wm
     ./shell
     ./wezterm
+    ./stylix.nix
   ];
 
   xdg.enable = true;
