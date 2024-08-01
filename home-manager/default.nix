@@ -7,6 +7,7 @@
     ./wezterm
     ./stylix.nix
     ./ssh.nix
+    ./vscode
   ];
 
   xdg.enable = true;
@@ -33,14 +34,12 @@
     diff-so-fancy.enable = true;
   };
 
-  
-
-  programs.vscode.enable = true;
   programs.firefox.enable = true;
 
-  
+
 
   programs.home-manager.enable = true;
 
   services.dunst.enable = true;
+  services.udiskie.enable = true;
 }

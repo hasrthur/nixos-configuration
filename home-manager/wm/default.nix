@@ -11,6 +11,16 @@
     extraConfig = builtins.readFile ./configs/hypr.conf;
   };
 
+  home.file.".config/hypr" = {
+    source = ./configs/hyprland;
+    recursive = true;
+  };
+
+  # programs.hyprlock = {
+  #   enable = true;
+  #   extraConfig = builtins.readFile ./configs/hyprlock.conf;
+  # };
+
   programs.waybar = {
     enable = true;
     systemd.enable = true;

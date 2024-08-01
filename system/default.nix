@@ -19,5 +19,7 @@
     ./packages.nix
     ./fonts.nix
     ./stylix.nix
+    ./udisks.nix
+    ./thunar.nix
   ];
 }

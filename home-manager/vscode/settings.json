@@ -1,0 +1,30 @@
+{
+    "[nix]": {
+        "editor.tabSize": 2
+    },
+
+    "diffEditor.codeLens": true,
+    "diffEditor.experimental.showMoves": true,
+
+    "editor.cursorBlinking": "solid",
+    "editor.cursorSmoothCaretAnimation": "on",
+    "editor.cursorStyle": "block",
+
+    "editor.find.autoFindInSelection": "multiline",
+
+    "editor.fontLigatures": true,
+    "editor.fontSize": 16,
+
+    "editor.formatOnSave": true,
+    "editor.formatOnSaveMode": "modifications",
+    "editor.formatOnType": true,
+
+    "editor.minimap.enabled": false,
+
+    "editor.renderWhitespace": "all",
+
+    "files.autoSave": "onFocusChange",
+    "files.enableTrash": false,
+    "files.readonlyFromPermissions": true,
+    "files.trimTrailingWhitespace": true
+}
