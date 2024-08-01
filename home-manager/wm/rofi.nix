@@ -12,7 +12,7 @@ in {
     terminal = "rofi-sensible-teminal";
     pass.enable = true;
     package = pkgs.rofi-wayland;
-    theme = lib.mkMerge [{ 
+    theme = lib.mkMerge [{
       "*" = {
         margin = 0;
         padding = 0;

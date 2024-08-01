@@ -36,8 +36,6 @@
 
   programs.firefox.enable = true;
 
-
-
   programs.home-manager.enable = true;
 
   services.dunst.enable = true;
