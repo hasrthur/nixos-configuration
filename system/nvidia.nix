@@ -8,6 +8,6 @@
     open = false;
     modesetting.enable = true;
     powerManagement.enable = true;
-    powerManagement.finegrained = false;
+    powerManagement.finegrained = true;
   };
 }
