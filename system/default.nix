@@ -22,5 +22,6 @@
     ./udisks.nix
     ./thunar.nix
     ./hybernation.nix
+    ./wayland.nix
   ];
 }

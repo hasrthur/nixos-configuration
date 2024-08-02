@@ -4,7 +4,8 @@
   imports = [
     ./wm
     ./shell
-    ./wezterm
+    # unfortunately wezterm does not work with wayland
+    # ./wezterm
     ./stylix.nix
     ./ssh.nix
     ./vscode
@@ -27,6 +28,9 @@
     lxqt.lxqt-policykit
     gcc
   ];
+
+  programs.foot.enable = true;
+  programs.kitty.enable = true;
 
   programs.git = {
     enable = true;
