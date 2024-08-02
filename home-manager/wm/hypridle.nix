@@ -17,7 +17,7 @@
           on-resume = "hyprctl dispatch dpms on";
         }
         {
-          timeout = 300;
+          timeout = 301;
           on-timeout = "hyprlock";
         }
         {

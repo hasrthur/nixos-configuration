@@ -25,6 +25,7 @@
     tig
     devenv
     lxqt.lxqt-policykit
+    gcc
   ];
 
   programs.git = {

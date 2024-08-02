@@ -21,5 +21,6 @@
     ./stylix.nix
     ./udisks.nix
     ./thunar.nix
+    ./hybernation.nix
   ];
 }
