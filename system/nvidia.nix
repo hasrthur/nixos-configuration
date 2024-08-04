@@ -10,4 +10,6 @@
     powerManagement.enable = true;
     powerManagement.finegrained = false;
   };
+
+  boot.kernelParams = [ "nvidia.NVreg_EnableGpuFirmware=0" ];
 }

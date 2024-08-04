@@ -6,6 +6,7 @@
     ./shell
     # unfortunately wezterm does not work with wayland
     # ./wezterm
+    ./kitty
     ./stylix.nix
     ./ssh.nix
     ./vscode
@@ -45,4 +46,6 @@
 
   services.dunst.enable = true;
   services.udiskie.enable = true;
+
+  services.cliphist.enable = true;
 }

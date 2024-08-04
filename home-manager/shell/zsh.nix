@@ -9,5 +9,8 @@
     initExtra = ''
     alias cat=bat
     '';
+    loginExtra = ''
+    ssh-add ~/.ssh/github
+    '';
   };
 }
