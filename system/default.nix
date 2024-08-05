@@ -23,6 +23,5 @@
     ./thunar.nix
     ./hybernation.nix
     ./wayland.nix
-    ./clipboard.nix
   ];
 }

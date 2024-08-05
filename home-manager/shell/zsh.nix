@@ -8,9 +8,8 @@
     dotDir = ".config/zsh";
     initExtra = ''
     alias cat=bat
-    '';
-    loginExtra = ''
-    ssh-add ~/.ssh/github
+
+    ssh-add ~/.ssh/github &> /dev/null
     '';
   };
 }

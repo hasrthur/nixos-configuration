@@ -3,11 +3,11 @@
 {
   wayland.windowManager.hyprland = {
     enable = true;
-    extraConfig = builtins.readFile ./configs/hypr.conf;
+    extraConfig = builtins.readFile ./hypr.conf;
   };
 
   home.file.".config/hypr" = {
-    source = ./configs/hyprland;
+    source = ./configs;
     recursive = true;
   };
 }

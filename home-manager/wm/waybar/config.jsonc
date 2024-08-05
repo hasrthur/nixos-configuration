@@ -134,21 +134,19 @@
   },
   "hyprland/workspaces": {
       "disable-scroll": true,
-      "all-outputs": true,
+      "all-outputs": false,
       "warp-on-scroll": false,
-      "format": "{name}: {icon}",
-      "persistent-workspaces": {
-        "*": 10
-      },
+      "sort-by": "id",
+      "format": "{icon}",
       "format-icons": {
           "1": "",
-          "2": "",
-          "3": "",
-          "4": "",
-          "5": "",
-          "urgent": "",
-          "focused": "",
-          "default": ""
+          "2": "",
+          "3": "",
+          "discordslack": "/",
+          "vibertelegram": "/"
+          // "urgent": "",
+          // "focused": "",
+          // "default": ""
       }
   },
   "keyboard-state": {

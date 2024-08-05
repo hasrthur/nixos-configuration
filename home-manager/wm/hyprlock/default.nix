@@ -3,6 +3,6 @@
 {
   programs.hyprlock = {
     enable = true;
-    extraConfig = builtins.readFile ./configs/hyprlock.conf;
+    extraConfig = builtins.readFile ./hyprlock.conf;
   };
 }

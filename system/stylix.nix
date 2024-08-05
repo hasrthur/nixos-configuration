@@ -5,7 +5,7 @@
     enable = true;
     polarity = "dark";
     image = ../images/wallpapers/CuteCat.png;
-    base16Scheme = "${pkgs.base16-schemes}/share/themes/snazzy.yaml";
+    base16Scheme = "${pkgs.base16-schemes}/share/themes/gruvbox-material-dark-hard.yaml";
     fonts = {
       monospace = {
         name = "CaskaydiaCove Nerd Font Propo";

@@ -4,12 +4,11 @@
   imports = [
     ./wm
     ./shell
-    # unfortunately wezterm does not work with wayland
-    # ./wezterm
     ./kitty
     ./stylix.nix
     ./ssh.nix
     ./vscode
+    ./yazi
   ];
 
   xdg.enable = true;
@@ -28,6 +27,9 @@
     devenv
     lxqt.lxqt-policykit
     gcc
+    wl-clipboard
+    hyprshot
+    bitwarden-desktop
   ];
 
   programs.foot.enable = true;

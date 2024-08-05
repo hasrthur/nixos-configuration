@@ -3,9 +3,9 @@
 {
   imports = [
     ./rofi.nix
-    ./hyprland.nix
+    ./hyprland
     ./hypridle.nix
-    ./hyprlock.nix
-    ./waybar.nix
+    ./hyprlock
+    ./waybar
   ];
 }
