@@ -5,10 +5,6 @@ with lib.hm.gvariant;
 
 {
   dconf.settings = {
-    "org/gnome/mutter" = {
-      experimental-features = [ "scale-monitor-framebuffer" ];
-    };
-
     "apps/seahorse/listing" = {
       keyrings-selected = [ "secret-service:///org/freedesktop/secrets/collection/login" ];
     };
@@ -30,7 +26,7 @@ with lib.hm.gvariant;
     };
 
     "org/gnome/Weather" = {
-      locations = [ (mkVariant (mkTuple [ (mkUint32 2) (mkVariant (mkTuple [ "Kyiv" "UKKK" true [ (mkTuple [ 0.8796750376437729 0.531481851870904 ]) ] [ (mkTuple [ 0.8802277136047092 0.5326163158847004 ]) ] ])) ])) ];
+      locations = [ (mkVariant (mkTuple [ (mkUint32 2) (mkVariant (mkTuple [ "Kyiv" "UKKK" true [ (mkTuple [ 0.879675 0.531482 ]) ] [ (mkTuple [ 0.880228 0.532616 ]) ] ])) ])) ];
       window-height = 488;
       window-maximized = false;
       window-width = 992;
@@ -40,10 +36,6 @@ with lib.hm.gvariant;
       active-view = "month";
       window-maximized = true;
       window-size = mkTuple [ 768 600 ];
-    };
-
-    "org/gnome/control-center" = {
-      last-panel = "online-accounts";
     };
 
     "org/gnome/desktop/a11y/applications" = {
@@ -133,7 +125,7 @@ with lib.hm.gvariant;
 
     "org/gnome/desktop/peripherals/mouse" = {
       accel-profile = "default";
-      speed = -5.405405405405406e-2;
+      speed = -5.4054e-2;
     };
 
     "org/gnome/desktop/peripherals/touchpad" = {
@@ -191,6 +183,7 @@ with lib.hm.gvariant;
 
     "org/gnome/mutter" = {
       edge-tiling = true;
+      experimental-features = [ "scale-monitor-framebuffer" ];
     };
 
     "org/gnome/nautilus/preferences" = {
@@ -206,7 +199,7 @@ with lib.hm.gvariant;
 
     "org/gnome/shell" = {
       disabled-extensions = [ "launch-new-instance@gnome-shell-extensions.gcampax.github.com" "light-style@gnome-shell-extensions.gcampax.github.com" "screenshot-window-sizer@gnome-shell-extensions.gcampax.github.com" "user-theme@gnome-shell-extensions.gcampax.github.com" "apps-menu@gnome-shell-extensions.gcampax.github.com" "window-list@gnome-shell-extensions.gcampax.github.com" "workspace-indicator@gnome-shell-extensions.gcampax.github.com" ];
-      enabled-extensions = [ "drive-menu@gnome-shell-extensions.gcampax.github.com" "system-monitor@gnome-shell-extensions.gcampax.github.com" "native-window-placement@gnome-shell-extensions.gcampax.github.com" "places-menu@gnome-shell-extensions.gcampax.github.com" "windowsNavigator@gnome-shell-extensions.gcampax.github.com" "auto-move-windows@gnome-shell-extensions.gcampax.github.com" ];
+      enabled-extensions = [ "drive-menu@gnome-shell-extensions.gcampax.github.com" "system-monitor@gnome-shell-extensions.gcampax.github.com" "native-window-placement@gnome-shell-extensions.gcampax.github.com" "places-menu@gnome-shell-extensions.gcampax.github.com" "windowsNavigator@gnome-shell-extensions.gcampax.github.com" "auto-move-windows@gnome-shell-extensions.gcampax.github.com" "dash-to-dock@micxgx.gmail.com" ];
       favorite-apps = [ "org.gnome.Epiphany.desktop" "org.gnome.Geary.desktop" "chromium-browser.desktop" "org.gnome.Calendar.desktop" "org.gnome.Music.desktop" "org.gnome.Nautilus.desktop" ];
       last-selected-power-profile = "performance";
       welcome-dialog-last-shown-version = "46.4";
@@ -214,6 +207,40 @@ with lib.hm.gvariant;
 
     "org/gnome/shell/extensions/auto-move-windows" = {
       application-list = [ "chromium-browser.desktop:3" "code.desktop:2" "org.gnome.Console.desktop:1" "slack.desktop:4" "vesktop.desktop:6" "geary-autostart.desktop:7" "org.gnome.Geary.desktop:7" ];
+    };
+
+    "org/gnome/shell/extensions/dash-to-dock" = {
+      always-center-icons = true;
+      apply-custom-theme = false;
+      apply-glossy-effect = false;
+      background-opacity = 0.0;
+      custom-theme-shrink = true;
+      dash-max-icon-size = 32;
+      disable-overview-on-startup = true;
+      dock-position = "BOTTOM";
+      extend-height = false;
+      height-fraction = 0.9;
+      hide-tooltip = false;
+      hot-keys = false;
+      icon-size-fixed = false;
+      isolate-monitors = false;
+      isolate-workspaces = true;
+      multi-monitor = true;
+      preferred-monitor = -2;
+      preferred-monitor-by-connector = "DP-1";
+      preview-size-scale = 1.0;
+      running-indicator-style = "DOTS";
+      scroll-to-focused-application = true;
+      show-apps-always-in-the-edge = true;
+      show-apps-at-top = false;
+      show-favorites = false;
+      show-mounts-network = false;
+      show-running = true;
+      show-show-apps-button = true;
+      show-trash = false;
+      show-windows-preview = true;
+      transparency-mode = "FIXED";
+      unity-backlit-items = false;
     };
 
     "org/gnome/shell/extensions/system-monitor" = {
@@ -226,7 +253,7 @@ with lib.hm.gvariant;
 
     "org/gnome/shell/weather" = {
       automatic-location = true;
-      locations = [ (mkVariant (mkTuple [ (mkUint32 2) (mkVariant (mkTuple [ "Kyiv" "UKKK" true [ (mkTuple [ 0.8796750376437729 0.531481851870904 ]) ] [ (mkTuple [ 0.8802277136047092 0.5326163158847004 ]) ] ])) ])) ];
+      locations = [ (mkVariant (mkTuple [ (mkUint32 2) (mkVariant (mkTuple [ "Kyiv" "UKKK" true [ (mkTuple [ 0.879675 0.531482 ]) ] [ (mkTuple [ 0.880228 0.532616 ]) ] ])) ])) ];
     };
 
     "org/gnome/shell/world-clocks" = {
