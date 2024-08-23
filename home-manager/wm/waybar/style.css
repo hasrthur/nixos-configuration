@@ -169,12 +169,12 @@ label:focus {
 }
 
 #memory {
-    min-width: 30px;
+    min-width: 30pt;
     /* background-color: #9b59b6; */
 }
 
 #disk {
-    min-width: 30px;
+    min-width: 30pt;
     /* background-color: #964B00; */
 }
 
@@ -277,7 +277,7 @@ label:focus {
     /* color: #740864; */
     padding: 0 5px;
     margin: 0 5px;
-    min-width: 16px;
+    min-width: 16pt;
 }
 
 #keyboard-state {

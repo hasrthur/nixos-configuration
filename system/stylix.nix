@@ -14,12 +14,12 @@
       serif = config.stylix.fonts.monospace;
       sansSerif = config.stylix.fonts.monospace;
 
-      sizes = {
-        applications = 14;
-        desktop = 14;
-        popups = 16;
-        terminal = 14;
-      };
+      # sizes = {
+      #   applications = 14;
+      #   desktop = 14;
+      #   popups = 14;
+      #   terminal = 14;
+      # };
     };
     opacity = {
       applications = 0.9;
@@ -31,5 +31,10 @@
       grub.useImage = true;
       nixos-icons.enable = true;
     };
+    # cursor = {
+    #   name = "Breeze";
+    #   package = pkgs.apple-cursor;
+    #   size = 24;
+    # };
   };
 }

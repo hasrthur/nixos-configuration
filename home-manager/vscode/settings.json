@@ -15,16 +15,72 @@
     "editor.fontLigatures": true,
     "editor.fontSize": 16,
 
-    "editor.formatOnSave": true,
-    "editor.formatOnSaveMode": "modifications",
+    "editor.formatOnSave": false,
+    "editor.formatOnSaveMode": "file",
     "editor.formatOnType": true,
 
     "editor.minimap.enabled": false,
 
     "editor.renderWhitespace": "all",
 
+    "editor.wordWrap": "bounded",
+    "editor.wrappingIndent": "indent",
+    "editor.wordWrapColumn": 120,
+
+    "files.insertFinalNewline": true,
+
     "files.autoSave": "onFocusChange",
     "files.enableTrash": false,
     "files.readonlyFromPermissions": true,
-    "files.trimTrailingWhitespace": true
+    "files.trimTrailingWhitespace": true,
+
+    "workbench.sideBar.location": "right",
+    "workbench.tree.renderIndentGuides": "always",
+    "workbench.editor.showTabs": "single",
+    "workbench.commandPalette.preserveInput": true,
+    "workbench.quickOpen.preserveInput": true,
+
+    "explorer.compactFolders": false,
+    "explorer.confirmDelete": false,
+    "explorer.confirmDragAndDrop": false,
+    "explorer.confirmPasteNative": false,
+    "explorer.incrementalNaming": "disabled",
+
+    "debug.allowBreakpointsEverywhere": true,
+
+    "telemetry.telemetryLevel": "off",
+
+    "search.mode": "newEditor",
+    "search.useIgnoreFiles": false,
+    "search.serchEditor.reusePriorSearchConfiguration": true,
+    "search.quickAccess.preserveInput": true,
+
+    "dev.containers.dockerSocketPath": "/var/run/docker.sock",
+    "dev.containers.defaultExtensions": [
+        "nefrob.vscode-just-syntax",
+        "mtxr.sqltools",
+        "mtxr.sqltools-driver-pg",
+        "eamodio.gitlens"
+    ],
+
+    "files.exclude": {
+        "**/.git": false,
+        "**/.svn": true,
+        "**/.hg": true,
+        "**/CVS": true,
+        "**/.DS_Store": true,
+        "**/Thumbs.db": true
+    },
+
+    "dev.containers.experimentalLockfile": true,
+
+    "terminal.integrated.detectLocale": "off",
+
+    "remote.extensionKind": {
+        "ms-azuretools.vscode-docker": [
+            "ui"
+        ]
+    },
+
+    "git.allowForcePush": true
 }

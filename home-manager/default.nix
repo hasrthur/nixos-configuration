@@ -2,13 +2,18 @@
 
 {
   imports = [
-    ./wm
+    # ./wm
     ./shell
     ./kitty
     ./stylix.nix
     ./ssh.nix
     ./vscode
     ./yazi
+    ./git.nix
+    ./thunderbird.nix
+    ./just
+    ./gnome
+    # ./plasma.nix
   ];
 
   xdg.enable = true;
@@ -24,30 +29,13 @@
     bat
     vim
     tig
-    devenv
-    lxqt.lxqt-policykit
-    gcc
-    wl-clipboard
-    hyprshot
-    bitwarden-desktop
+    vesktop
+    slack
+    zoom-us
+    devcontainer
   ];
 
-  programs.foot.enable = true;
-  programs.kitty.enable = true;
-
-  programs.git = {
-    enable = true;
-    userName = "Artur Borysov";
-    userEmail = "arthur.borisow@gmail.com";
-    diff-so-fancy.enable = true;
-  };
-
-  programs.firefox.enable = true;
+  programs.chromium.enable = true;
 
   programs.home-manager.enable = true;
-
-  services.dunst.enable = true;
-  services.udiskie.enable = true;
-
-  services.cliphist.enable = true;
 }

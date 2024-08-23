@@ -5,13 +5,19 @@
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
 
     disko = {
-     url = "github:nix-community/disko";
-     inputs.nixpkgs.follows = "nixpkgs";
+      url = "github:nix-community/disko";
+      inputs.nixpkgs.follows = "nixpkgs";
     };
 
     home-manager = {
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    plasma-manager = {
+      url = "github:nix-community/plasma-manager";
+      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.home-manager.follows = "home-manager";
     };
 
     stylix = {
@@ -20,11 +26,11 @@
     };
   };
 
-  outputs = { self, nixpkgs, disko, home-manager, stylix, ... }@inputs: 
+  outputs = { self, nixpkgs, disko, home-manager, plasma-manager, stylix, ... }@inputs:
     let
       username = "artur";
       args = { inherit inputs username; };
-    in      
+    in
       {
         nixosConfigurations.nixos = nixpkgs.lib.nixosSystem {
           system = "x86_64-linux";
@@ -33,7 +39,7 @@
             ./system
 
             stylix.nixosModules.stylix
-            
+
             home-manager.nixosModules.home-manager
             {
               home-manager = {
@@ -41,6 +47,7 @@
                 useUserPackages = true;
                 users."${username}" = import ./home-manager;
                 extraSpecialArgs = args;
+                sharedModules = [ plasma-manager.homeManagerModules.plasma-manager ];
               };
             }
           ];

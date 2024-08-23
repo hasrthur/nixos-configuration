@@ -10,7 +10,7 @@
     };
   };
 
-  environment.systemPackages = [
-    pkgs.blueberry
-  ];
+  # environment.systemPackages = [
+  #   pkgs.blueberry
+  # ];
 }

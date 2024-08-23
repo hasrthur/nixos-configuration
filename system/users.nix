@@ -6,5 +6,5 @@
     extraGroups = [ "wheel" ]; # Enable ‘sudo’ for the user.
   };
 
-  services.getty.autologinUser = username;
+  # services.getty.autologinUser = username;
 }

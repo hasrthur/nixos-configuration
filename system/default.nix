@@ -1,4 +1,4 @@
-{ config, nixpkgs, inputs, ...}:
+{ config, pkgs, nixpkgs, inputs, ...}:
 
 {
   imports = [
@@ -7,7 +7,7 @@
     ./hardware-configuration.nix
     ./kernel.nix
     ./bootloader.nix
-    ./nvidia.nix
+    ./video-graphics.nix
     ./bluetooth.nix
     ./networking.nix
     ./shell.nix
@@ -16,12 +16,13 @@
     ./media.nix
     ./timezone.nix
     ./users.nix
-    ./packages.nix
-    ./fonts.nix
     ./stylix.nix
-    ./udisks.nix
-    ./thunar.nix
-    ./hybernation.nix
+    # ./udisks.nix
+    # ./thunar.nix
+    # ./hybernation.nix
     ./wayland.nix
+    ./docker.nix
+    ./hosts.nix
+    ./plasma.nix
   ];
 }
