@@ -12,5 +12,6 @@
     })
 
     gnomeExtensions.dash-to-dock
+    gnomeExtensions.appindicator
   ];
 }

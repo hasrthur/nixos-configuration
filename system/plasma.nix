@@ -33,6 +33,7 @@
 
     xserver = {
       enable = true;
+
       xkb = {
         layout = "us,ua";
         options = "grp:ctrl_space_toggle";

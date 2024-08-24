@@ -92,7 +92,6 @@ with lib.hm.gvariant;
       enable-hot-corners = false;
       font-name = "CaskaydiaCove Nerd Font Propo 12";
       gtk-theme = "adw-gtk3";
-      icon-theme = "breeze";
       monospace-font-name = "CaskaydiaCove Nerd Font Propo 12";
       scaling-factor = mkUint32 1;
       text-scaling-factor = 1.0;
