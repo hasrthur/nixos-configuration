@@ -28,7 +28,11 @@
     #   };
     # };
 
-    xserver.displayManager.gdm.enable = true;
+    xserver.displayManager.gdm = {
+      enable = true;
+      wayland = true;
+    };
+
     xserver.desktopManager.gnome.enable = true;
 
     xserver = {

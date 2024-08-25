@@ -23,6 +23,6 @@
     ./wayland.nix
     ./docker.nix
     ./hosts.nix
-    ./plasma.nix
+    ./dm.nix
   ];
 }

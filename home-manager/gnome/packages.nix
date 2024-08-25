@@ -2,6 +2,8 @@
 
 {
   home.packages = with pkgs; [
+    gnome-tweaks
+
     (dconf2nix.overrideAttrs {
       src = fetchgit {
         url = "https://github.com/gvolpe/dconf2nix.git";
