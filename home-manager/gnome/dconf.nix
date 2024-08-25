@@ -92,26 +92,54 @@ with lib.hm.gvariant;
       enable-hot-corners = false;
       font-name = "CaskaydiaCove Nerd Font Propo 12";
       gtk-theme = "adw-gtk3";
+      icon-theme = "Papirus-Dark";
       monospace-font-name = "CaskaydiaCove Nerd Font Propo 12";
       scaling-factor = mkUint32 1;
       text-scaling-factor = 1.0;
       toolbar-style = "text";
     };
 
+    "org/gnome/desktop/media-handling" = {
+      autorun-never = true;
+      autorun-x-content-ignore = [ "x-content/audio-cdda" ];
+      autorun-x-content-open-folder = [];
+      autorun-x-content-start-app = [ "x-content/unix-software" "x-content/ostree-repository" ];
+    };
+
     "org/gnome/desktop/notifications" = {
       application-children = [ "org-gnome-console" "code-url-handler" "thunderbird" "slack" "org-gnome-geary" ];
+    };
+
+    "org/gnome/desktop/notifications/application/chromium-browser" = {
+      application-id = "chromium-browser.desktop";
     };
 
     "org/gnome/desktop/notifications/application/code-url-handler" = {
       application-id = "code-url-handler.desktop";
     };
 
+    "org/gnome/desktop/notifications/application/code" = {
+      application-id = "code.desktop";
+    };
+
+    "org/gnome/desktop/notifications/application/gnome-power-panel" = {
+      application-id = "gnome-power-panel.desktop";
+    };
+
     "org/gnome/desktop/notifications/application/org-gnome-console" = {
       application-id = "org.gnome.Console.desktop";
     };
 
+    "org/gnome/desktop/notifications/application/org-gnome-extensions" = {
+      application-id = "org.gnome.Extensions.desktop";
+    };
+
     "org/gnome/desktop/notifications/application/org-gnome-geary" = {
       application-id = "org.gnome.Geary.desktop";
+    };
+
+    "org/gnome/desktop/notifications/application/org-gnome-settings" = {
+      application-id = "org.gnome.Settings.desktop";
     };
 
     "org/gnome/desktop/notifications/application/slack" = {
@@ -120,6 +148,10 @@ with lib.hm.gvariant;
 
     "org/gnome/desktop/notifications/application/thunderbird" = {
       application-id = "thunderbird.desktop";
+    };
+
+    "org/gnome/desktop/peripherals/keyboard" = {
+      numlock-state = true;
     };
 
     "org/gnome/desktop/peripherals/mouse" = {
@@ -215,24 +247,26 @@ with lib.hm.gvariant;
       background-opacity = 0.0;
       custom-theme-shrink = true;
       dash-max-icon-size = 32;
-      disable-overview-on-startup = true;
+      disable-overview-on-startup = false;
       dock-position = "BOTTOM";
       extend-height = false;
       height-fraction = 0.9;
       hide-tooltip = false;
       hot-keys = false;
       icon-size-fixed = false;
+      intellihide-mode = "FOCUS_APPLICATION_WINDOWS";
       isolate-monitors = false;
-      isolate-workspaces = true;
+      isolate-workspaces = false;
       multi-monitor = true;
       preferred-monitor = -2;
       preferred-monitor-by-connector = "DP-1";
       preview-size-scale = 1.0;
       running-indicator-style = "DOTS";
+      scroll-action = "switch-workspace";
       scroll-to-focused-application = true;
       show-apps-always-in-the-edge = true;
       show-apps-at-top = false;
-      show-favorites = false;
+      show-favorites = true;
       show-mounts-network = false;
       show-running = true;
       show-show-apps-button = true;
@@ -240,6 +274,7 @@ with lib.hm.gvariant;
       show-windows-preview = true;
       transparency-mode = "FIXED";
       unity-backlit-items = false;
+      workspace-agnostic-urgent-windows = true;
     };
 
     "org/gnome/shell/extensions/system-monitor" = {
