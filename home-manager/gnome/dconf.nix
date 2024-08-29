@@ -14,6 +14,16 @@ with lib.hm.gvariant;
       width = 600;
     };
 
+    "org/gnome/Console" = {
+      last-window-maximised = true;
+      last-window-size = mkTuple [ 732 504 ];
+    };
+
+    "org/gnome/Extensions" = {
+      window-height = 815;
+      window-width = 1098;
+    };
+
     "org/gnome/Geary" = {
       migrated-config = true;
       run-in-background = true;
@@ -36,6 +46,11 @@ with lib.hm.gvariant;
       active-view = "month";
       window-maximized = true;
       window-size = mkTuple [ 768 600 ];
+    };
+
+    "org/gnome/control-center" = {
+      last-panel = "sound";
+      window-state = mkTuple [ 980 640 false ];
     };
 
     "org/gnome/desktop/a11y/applications" = {
@@ -79,6 +94,7 @@ with lib.hm.gvariant;
     "org/gnome/desktop/input-sources" = {
       mru-sources = [ (mkTuple [ "xkb" "us" ]) ];
       per-window = true;
+      show-all-sources = false;
       sources = [ (mkTuple [ "xkb" "us" ]) (mkTuple [ "xkb" "ua" ]) ];
       xkb-options = [ "terminate:ctrl_alt_bksp" ];
     };
@@ -107,7 +123,7 @@ with lib.hm.gvariant;
     };
 
     "org/gnome/desktop/notifications" = {
-      application-children = [ "org-gnome-console" "code-url-handler" "thunderbird" "slack" "org-gnome-geary" ];
+      application-children = [ "org-gnome-console" "code-url-handler" "thunderbird" "slack" "org-gnome-geary" "vesktop" "chromium-browser" ];
     };
 
     "org/gnome/desktop/notifications/application/chromium-browser" = {
@@ -142,12 +158,20 @@ with lib.hm.gvariant;
       application-id = "org.gnome.Settings.desktop";
     };
 
+    "org/gnome/desktop/notifications/application/org-gnome-tweaks" = {
+      application-id = "org.gnome.tweaks.desktop";
+    };
+
     "org/gnome/desktop/notifications/application/slack" = {
       application-id = "slack.desktop";
     };
 
     "org/gnome/desktop/notifications/application/thunderbird" = {
       application-id = "thunderbird.desktop";
+    };
+
+    "org/gnome/desktop/notifications/application/vesktop" = {
+      application-id = "vesktop.desktop";
     };
 
     "org/gnome/desktop/peripherals/keyboard" = {
@@ -178,8 +202,8 @@ with lib.hm.gvariant;
 
     "org/gnome/desktop/wm/preferences" = {
       button-layout = "icon:minimize,maximize,close";
+      mouse-button-modifier = "<Alt>";
       num-workspaces = 7;
-      workspace-names = [ "v" "Workspace 2" "Workspace 3" "Workspace 4" "Workspace 5" "Workspace 6" ];
     };
 
     "org/gnome/epiphany" = {
@@ -229,9 +253,9 @@ with lib.hm.gvariant;
     };
 
     "org/gnome/shell" = {
-      disabled-extensions = [ "launch-new-instance@gnome-shell-extensions.gcampax.github.com" "light-style@gnome-shell-extensions.gcampax.github.com" "screenshot-window-sizer@gnome-shell-extensions.gcampax.github.com" "user-theme@gnome-shell-extensions.gcampax.github.com" "apps-menu@gnome-shell-extensions.gcampax.github.com" "window-list@gnome-shell-extensions.gcampax.github.com" "workspace-indicator@gnome-shell-extensions.gcampax.github.com" ];
-      enabled-extensions = [ "drive-menu@gnome-shell-extensions.gcampax.github.com" "system-monitor@gnome-shell-extensions.gcampax.github.com" "native-window-placement@gnome-shell-extensions.gcampax.github.com" "places-menu@gnome-shell-extensions.gcampax.github.com" "windowsNavigator@gnome-shell-extensions.gcampax.github.com" "auto-move-windows@gnome-shell-extensions.gcampax.github.com" "dash-to-dock@micxgx.gmail.com" ];
-      favorite-apps = [ "org.gnome.Epiphany.desktop" "org.gnome.Geary.desktop" "chromium-browser.desktop" "org.gnome.Calendar.desktop" "org.gnome.Music.desktop" "org.gnome.Nautilus.desktop" ];
+      disabled-extensions = [ "launch-new-instance@gnome-shell-extensions.gcampax.github.com" "light-style@gnome-shell-extensions.gcampax.github.com" "screenshot-window-sizer@gnome-shell-extensions.gcampax.github.com" "user-theme@gnome-shell-extensions.gcampax.github.com" "window-list@gnome-shell-extensions.gcampax.github.com" "workspace-indicator@gnome-shell-extensions.gcampax.github.com" "apps-menu@gnome-shell-extensions.gcampax.github.com" "places-menu@gnome-shell-extensions.gcampax.github.com" ];
+      enabled-extensions = [ "drive-menu@gnome-shell-extensions.gcampax.github.com" "system-monitor@gnome-shell-extensions.gcampax.github.com" "native-window-placement@gnome-shell-extensions.gcampax.github.com" "windowsNavigator@gnome-shell-extensions.gcampax.github.com" "auto-move-windows@gnome-shell-extensions.gcampax.github.com" "dash-to-dock@micxgx.gmail.com" "appindicatorsupport@rgcjonas.gmail.com" "just-perfection-desktop@just-perfection" "NotificationCounter@coolllsk" "trayIconsReloaded@selfmade.pl" ];
+      favorite-apps = [ "org.gnome.Geary.desktop" "chromium-browser.desktop" "org.gnome.Calendar.desktop" "org.gnome.Music.desktop" "org.gnome.Nautilus.desktop" ];
       last-selected-power-profile = "performance";
       welcome-dialog-last-shown-version = "46.4";
     };
@@ -277,8 +301,45 @@ with lib.hm.gvariant;
       workspace-agnostic-urgent-windows = true;
     };
 
+    "org/gnome/shell/extensions/just-perfection" = {
+      accessibility-menu = true;
+      activities-button = true;
+      animation = 3;
+      clock-menu = true;
+      clock-menu-position = 0;
+      controls-manager-spacing-size = 0;
+      dash = true;
+      dash-app-running = true;
+      dash-separator = true;
+      keyboard-layout = true;
+      notification-banner-position = 2;
+      osd = true;
+      overlay-key = true;
+      panel = true;
+      panel-notification-icon = true;
+      power-icon = true;
+      quick-settings = true;
+      quick-settings-dark-mode = true;
+      show-apps-button = true;
+      startup-status = 0;
+      window-maximized-on-create = false;
+      window-picker-icon = true;
+      window-preview-close-button = true;
+      workspace = true;
+      workspace-switcher-should-show = true;
+      workspace-switcher-size = 0;
+      workspace-wrap-around = false;
+      workspaces-in-app-grid = true;
+      world-clock = true;
+    };
+
     "org/gnome/shell/extensions/system-monitor" = {
       show-swap = false;
+    };
+
+    "org/gnome/shell/extensions/trayIconsReloaded" = {
+      applications = "[{\"id\":\"slack.desktop\",\"hidden\":false},{\"id\":\"org.gnome.Geary.desktop\"}]";
+      tray-position = "right";
     };
 
     "org/gnome/shell/extensions/user-theme" = {
@@ -292,6 +353,10 @@ with lib.hm.gvariant;
 
     "org/gnome/shell/world-clocks" = {
       locations = [];
+    };
+
+    "org/gnome/tweaks" = {
+      show-extensions-notice = false;
     };
 
     "org/gtk/settings/file-chooser" = {

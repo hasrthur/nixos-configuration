@@ -2,6 +2,7 @@
 
 {
   imports = [
+    ./autostart.nix
     # ./wm
     ./shell
     ./kitty
@@ -12,8 +13,8 @@
     ./git.nix
     ./thunderbird.nix
     ./just
-    ./gnome
-    # ./plasma.nix
+    # ./gnome
+    ./plasma
   ];
 
   xdg.enable = true;

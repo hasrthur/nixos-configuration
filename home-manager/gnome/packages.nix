@@ -15,5 +15,8 @@
 
     gnomeExtensions.dash-to-dock
     gnomeExtensions.appindicator
+    gnomeExtensions.tray-icons-reloaded
+    gnomeExtensions.notification-counter
+    gnomeExtensions.just-perfection
   ];
 }
