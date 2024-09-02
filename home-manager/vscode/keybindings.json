@@ -1,0 +1,16 @@
+[
+    {
+        "key": "ctrl+shift+t",
+        "command": "rails.switchToSpec",
+        "when": "editorTextFocus"
+    },
+    {
+        "key": "ctrl+b",
+        "command": "editor.action.revealDefinition",
+        "when": "editorHasDefinitionProvider && editorTextFocus"
+    },
+    {
+        "key": "f1",
+        "command": "workbench.files.action.showActiveFileInExplorer"
+    }
+]

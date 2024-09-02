@@ -1,28 +1,25 @@
-{ config, pkgs, nixpkgs, inputs, ...}:
+{ inputs, ...}:
 
 {
   imports = [
     inputs.disko.nixosModules.disko
-    ./disk-config.nix
-    ./hardware-configuration.nix
-    ./kernel.nix
     ./bootloader.nix
-    ./video-graphics.nix
     ./bluetooth.nix
-    ./networking.nix
-    ./shell.nix
-    ./nix.nix
-    ./wm.nix
+    ./disk-config.nix
+    ./docker.nix
+    ./dm.nix
+    ./hardware-configuration.nix
+    ./hosts.nix
+    # ./hybernation.nix
+    ./kernel.nix
     ./media.nix
+    ./networking.nix
+    ./nix.nix
+    ./shell.nix
+    ./stylix.nix
     ./timezone.nix
     ./users.nix
-    ./stylix.nix
-    # ./udisks.nix
-    # ./thunar.nix
-    # ./hybernation.nix
+    ./video-graphics.nix
     ./wayland.nix
-    ./docker.nix
-    ./hosts.nix
-    ./dm.nix
   ];
 }

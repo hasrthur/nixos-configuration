@@ -66,6 +66,28 @@
       };
     }
     {
+      description = "Telegram";
+      match.window-class = "telegram-desktop org.telegram.desktop";
+      apply = {
+        desktops = "96a386b7-1daa-43f2-930d-9f623d8ff9d0";
+        maximizevert = true;
+        position = "0,44";
+        size = "1097,1190";
+        noborder = true;
+      };
+    }
+    {
+      description = "Viber";
+      match.window-class = "Viber ViberPC";
+      apply = {
+        desktops = "96a386b7-1daa-43f2-930d-9f623d8ff9d0";
+        maximizevert = true;
+        position = "1097,44";
+        size = "1097,1190";
+        noborder = true;
+      };
+    }
+    {
       description = "Thunderbird";
       match.window-class = "thunderbird thunderbird";
       apply = {

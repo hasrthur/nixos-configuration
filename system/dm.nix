@@ -24,6 +24,7 @@
     displayManager = {
       sddm = {
         enable = true;
+        # theme = "breeze-dark";
         wayland.enable = true;
       };
     };

@@ -2,6 +2,7 @@
 
 {
   imports = [
-    ./kded5rc.nix
+    # ./gtkconfig-autoload.nix
+    # ./window-focus.nix
   ];
 }

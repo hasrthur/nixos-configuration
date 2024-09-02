@@ -34,6 +34,9 @@
     slack
     zoom-us
     devcontainer
+
+    telegram-desktop
+    viber
   ];
 
   programs.chromium.enable = true;
