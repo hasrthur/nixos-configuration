@@ -59,10 +59,11 @@
     "dev.containers.dockerSocketPath": "/var/run/docker.sock",
     "dev.containers.defaultExtensions": [
         "nefrob.vscode-just-syntax",
-        "mtxr.sqltools",
-        "mtxr.sqltools-driver-pg",
-        "eamodio.gitlens"
+        "eamodio.gitlens",
+        "cweijan.vscode-postgresql-client2"
     ],
+
+    "database-client.telemetry.usesOnlineServices": false,
 
     "files.exclude": {
         "**/.git": false,
@@ -79,6 +80,12 @@
 
     "remote.extensionKind": {
         "ms-azuretools.vscode-docker": [
+            "ui"
+        ],
+        "GitHub.copilot": [
+            "ui"
+        ],
+        "GitHub.copilit-chat": [
             "ui"
         ]
     },
