@@ -2,8 +2,9 @@
 
 {
   imports = [
-    ./zsh.nix
-    ./starship.nix
+    ./bash.nix
     ./direnv.nix
+    ./starship.nix
+    ./zsh.nix
   ];
 }

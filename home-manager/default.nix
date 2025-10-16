@@ -2,10 +2,11 @@
 
 {
   imports = [
-    ./autostart.nix
-    # ./wm
+    # ./autostart.nix
+    ./wm
+    ./gpg.nix
     ./shell
-    ./kitty
+    ./ghostty.nix
     ./stylix.nix
     ./ssh.nix
     ./vscode
@@ -14,7 +15,7 @@
     ./thunderbird.nix
     ./just
     # ./gnome
-    ./plasma
+    # ./plasma
   ];
 
   xdg.enable = true;
@@ -40,6 +41,12 @@
 
     woeusb
 
+    jetbrains.ruby-mine
+
+    devenv
+
+    rails-new
+
     # (zoom-us.overrideAttrs (attrs: {
     #   nativeBuildInputs = (attrs.nativeBuildInputs or []) ++ [ pkgs.bbe ];
     #   postFixup = ''
@@ -54,4 +61,10 @@
   programs.chromium.enable = true;
 
   programs.home-manager.enable = true;
+
+
+    # plasma 6 is kinda broken with stylix
+  stylix.targets.kde.enable = false;
+  stylix.targets.gtk.enable = false;
+  stylix.targets.qt.enable = false;
 }

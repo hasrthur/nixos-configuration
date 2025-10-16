@@ -13,7 +13,6 @@
     "editor.find.autoFindInSelection": "multiline",
 
     "editor.fontLigatures": true,
-    "editor.fontSize": 16,
 
     "editor.formatOnSave": false,
     "editor.formatOnSaveMode": "file",

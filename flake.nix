@@ -47,7 +47,7 @@
                 useUserPackages = true;
                 users."${username}" = import ./home-manager;
                 extraSpecialArgs = args;
-                sharedModules = [ plasma-manager.homeManagerModules.plasma-manager ];
+                sharedModules = [ plasma-manager.homeModules.plasma-manager ];
               };
             }
           ];

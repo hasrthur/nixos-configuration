@@ -2,7 +2,10 @@ nixos-rebuild *ARGS:
     -@sudo nixos-rebuild switch --show-trace --verbose {{ARGS}}
 
 nixos-update *ARGS:
-    -@nix flake update ~/.nixos
+    -@nix flake update --flake ~/.nixos
+
+nixos-repair:
+    -@sudo nix-store --verify --check-contents --repair
 
 dconf:
     -@dconf dump / | dconf2nix > ~/.nixos/home-manager/gnome/dconf.nix

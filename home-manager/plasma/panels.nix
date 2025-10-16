@@ -65,7 +65,7 @@
               };
               icon = "view-media-track";
             };
-            preferredSource = "spotify";
+            # preferredSource = "spotify";
             musicControls.showPlaybackControls = true;
             songText = {
               displayInSeparateLines = true;

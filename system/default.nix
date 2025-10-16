@@ -7,11 +7,12 @@
     ./bluetooth.nix
     ./disk-config.nix
     ./docker.nix
-    ./dm.nix
+    ./dm
     ./hardware-configuration.nix
     ./hosts.nix
     # ./hybernation.nix
     ./kernel.nix
+    ./keyboard.nix
     ./media.nix
     ./networking.nix
     ./nix.nix
@@ -22,4 +23,6 @@
     ./video-graphics.nix
     ./wayland.nix
   ];
+
+  programs.zoom-us.enable = true;
 }

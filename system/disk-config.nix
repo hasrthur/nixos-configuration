@@ -53,7 +53,7 @@
                 mountpoint = "/partition-root";
                 swap = {
                   swapfile = {
-                    size = "70G";
+                    size = "72G";
                   };
                 };
               };

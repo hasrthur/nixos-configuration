@@ -7,18 +7,26 @@
     image = ../images/wallpapers/CuteCat.png;
     base16Scheme = "${pkgs.base16-schemes}/share/themes/gruvbox-material-dark-hard.yaml";
     fonts = {
+      sansSerif = {
+        package = pkgs.dejavu_fonts;
+        name = "DejaVu Sans";
+      };
+      serif = {
+        package = pkgs.dejavu_fonts;
+        name = "DejaVu Serif";
+      };
       monospace = {
         name = "CaskaydiaCove Nerd Font Propo";
-        package = pkgs.nerdfonts;
+        package = pkgs.nerd-fonts.caskaydia-cove;
       };
-      serif = config.stylix.fonts.monospace;
-      sansSerif = config.stylix.fonts.monospace;
+      # serif = config.stylix.fonts.monospace;
+      # sansSerif = config.stylix.fonts.monospace;
 
       sizes = {
-        applications = 14;
-        desktop = 14;
-        popups = 14;
-        terminal = 14;
+        applications = 16;
+        desktop = 16;
+        popups = 16;
+        terminal = 16;
       };
     };
     # opacity = {
@@ -28,13 +36,15 @@
     #   terminal = 0.9;
     # };
     targets = {
-      grub.useImage = true;
+      grub.useWallpaper = true;
       nixos-icons.enable = true;
     };
     cursor = {
-      name = "Breeze";
-      # package = pkgs.apple-cursor;
-      size = 30;
+      # name = "Adwaita";
+      # package = pkgs.adwaita-icon-theme;
+      name = "BreezeX-RosePineDawn-Linux";
+      package = pkgs.rose-pine-cursor;
+      size = 36;
     };
   };
 }
