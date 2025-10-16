@@ -1,8 +1,9 @@
 { username, pkgs, ... }:
 
 {
-  environment.systemPackages = [
-    pkgs.hyprcursor
+  environment.systemPackages = with pkgs; [
+    hyprcursor
+    hyprland-per-window-layout
   ];
 
   programs.hyprland.enable = true;
