@@ -62,6 +62,10 @@
 
   programs.home-manager.enable = true;
 
+  services.udiskie.enable = true;
+
+  services.swaync.enable = true;
+
 
     # plasma 6 is kinda broken with stylix
   # stylix.targets.kde.enable = false;
