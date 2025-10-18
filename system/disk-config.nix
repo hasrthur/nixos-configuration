@@ -1,3 +1,12 @@
+let
+  btrfsopt = [
+    "compress=zstd"
+    "noatime"
+    "ssd"
+    "space_cache=v2"
+    "user_subvol_rm_allowed"
+  ];
+in
 {
   disko.devices = {
     disk = {
@@ -9,48 +18,58 @@
           partitions = {
             ESP = {
               priority = 1;
-              name = "ESP";
-              start = "1M";
-              end = "128M";
+              name = "esp";
+              size = "1G";
               type = "EF00";
               content = {
                 type = "filesystem";
                 format = "vfat";
                 mountpoint = "/boot";
+                mountOptions = [ "umask=0077" ];
               };
             };
-            root = {
+            luks = {
               size = "100%";
               content = {
-                type = "btrfs";
-                extraArgs = [ "-f" ]; # Override existing partition
-                # Subvolumes must set a mountpoint in order to be mounted,
-                # unless their parent is mounted
-                subvolumes = {
-                  # Subvolume name is different from mountpoint
-                  "/rootfs" = {
-                    mountpoint = "/";
-                  };
-                  # Subvolume name is the same as the mountpoint
-                  "/home" = {
-                    mountOptions = [ "compress=zstd" ];
-                    mountpoint = "/home";
-                  };
-                  # Parent is not mounted so the mountpoint must be set
-                  "/nix" = {
-                    mountOptions = [ "compress=zstd" "noatime" ];
-                    mountpoint = "/nix";
-                  };
-                  # Subvolume for the swapfile
-                  "/swap" = {
-                    mountpoint = "/.swapvol";
-                    swap = {
-                      swapfile.size = "72G";
+                type = "luks";
+                name = "nixos";
+                passwordFile = "/tmp/pass";
+                extraFormatArgs = [
+                  "--type luks1"
+                  "--iter-time 1000"
+                ];
+                settings = {
+                  allowDiscards = true;
+                };
+                content = {
+                  type = "btrfs";
+                  extraArgs = [ "-f" ]; # Override existing partition
+
+                  subvolumes = {
+                    "@root" = {
+                      mountpoint = "/";
+                      mountOptions = btrfsopt;
+                    };
+                    "@home" = {
+                      mountpoint = "/home";
+                      mountOptions = btrfsopt;
+                    };
+                    "@nix" = {
+                      mountpoint = "/nix";
+                      mountOptions = btrfsopt;
+                    };
+                    "@data" = {
+                      mountpoint = "/data";
+                      mountOptions = btrfsopt;
+                    };
+                    "@swap" = {
+                      mountpoint = "/.swapvol";
+                      swap = {
+                        swapfile.size = "72G";
+                      };
                     };
                   };
                 };
-
-                mountpoint = "/partition-root";
               };
             };
           };
@@ -59,4 +78,3 @@
     };
   };
 }
-
