@@ -9,7 +9,7 @@ in {
 
   programs.rofi = {
     enable = true;
-    terminal = "rofi-sensible-teminal";
+    terminal = "${pkgs.ghostty}/bin/ghostty --class=local.ghostty.float";
     pass.enable = true;
     theme = lib.mkMerge [{
       "*" = {

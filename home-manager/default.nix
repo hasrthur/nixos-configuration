@@ -41,11 +41,11 @@
 
     woeusb
 
-    jetbrains.ruby-mine
-
     devenv
 
     rails-new
+
+    nautilus
 
     # (zoom-us.overrideAttrs (attrs: {
     #   nativeBuildInputs = (attrs.nativeBuildInputs or []) ++ [ pkgs.bbe ];
@@ -64,7 +64,7 @@
 
 
     # plasma 6 is kinda broken with stylix
-  stylix.targets.kde.enable = false;
-  stylix.targets.gtk.enable = false;
-  stylix.targets.qt.enable = false;
+  # stylix.targets.kde.enable = false;
+  # stylix.targets.gtk.enable = false;
+  # stylix.targets.qt.enable = false;
 }

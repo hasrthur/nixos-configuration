@@ -6,8 +6,7 @@
     package = config.boot.kernelPackages.nvidiaPackages.stable;
     open = false;
     modesetting.enable = true;
-    powerManagement.enable = false;
-    powerManagement.finegrained = false;
+    powerManagement.enable = true;
   };
 
   # boot.kernelParams = [ "nvidia.NVreg_EnableGpuFirmware=0" ];

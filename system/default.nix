@@ -10,7 +10,7 @@
     ./dm
     ./hardware-configuration.nix
     ./hosts.nix
-    # ./hybernation.nix
+    ./hybernation.nix
     ./kernel.nix
     ./keyboard.nix
     ./media.nix
@@ -23,6 +23,4 @@
     ./video-graphics.nix
     ./wayland.nix
   ];
-
-  programs.zoom-us.enable = true;
 }
