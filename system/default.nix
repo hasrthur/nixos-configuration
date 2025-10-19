@@ -10,7 +10,7 @@
     ./dm
     ./hardware-configuration.nix
     ./hosts.nix
-    ./hybernation.nix
+    # ./hybernation.nix
     ./kernel.nix
     ./keyboard.nix
     ./media.nix
