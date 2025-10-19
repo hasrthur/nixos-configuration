@@ -58,14 +58,10 @@ in
                       mountpoint = "/nix";
                       mountOptions = btrfsopt;
                     };
-                    "@data" = {
-                      mountpoint = "/data";
-                      mountOptions = btrfsopt;
-                    };
                     "@swap" = {
                       mountpoint = "/.swapvol";
                       swap = {
-                        swapfile.size = "72G";
+                        swapfile.size = "100G";
                       };
                     };
                   };
