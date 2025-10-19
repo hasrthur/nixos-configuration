@@ -1,5 +1,5 @@
 nixos-rebuild *ARGS:
-    -@sudo nixos-rebuild switch --show-trace --verbose {{ARGS}}
+    -@sudo nixos-rebuild switch --flake ~/.nixos --show-trace --verbose {{ARGS}}
 
 nixos-update *ARGS:
     -@nix flake update --flake ~/.nixos
