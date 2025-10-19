@@ -19,7 +19,7 @@ in
             ESP = {
               priority = 1;
               name = "esp";
-              size = "1G";
+              size = "10G";
               type = "EF00";
               content = {
                 type = "filesystem";
