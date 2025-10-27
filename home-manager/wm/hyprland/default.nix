@@ -29,6 +29,11 @@
     package = pkgs.wayprompt;
   };
 
+  services.swayosd.enable = true;
+  services.playerctld.enable = true;
+
+  programs.jq.enable = true;
+
   # programs.ashell = {
   #   enable = true;
   #   systemd.enable = true;
