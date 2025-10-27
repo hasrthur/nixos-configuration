@@ -5,6 +5,6 @@
 
   services.gpg-agent = {
     enable = true;
-    pinentry.package = pkgs.wayprompt;
+    pinentry.package = pkgs.pinentry-rofi;
   };
 }

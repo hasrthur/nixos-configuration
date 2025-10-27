@@ -9,7 +9,7 @@ in {
 
   programs.rofi = {
     enable = true;
-    terminal = "uwsm-app -- ${pkgs.ghostty}/bin/ghostty --class=local.ghostty.float";
+    terminal = "uwsm-app -- ${pkgs.ghostty}/bin/ghostty --class=terminal.float";
     pass.enable = true;
     extraConfig = {
       run-command = "uwsm-app -- {cmd}";

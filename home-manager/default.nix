@@ -3,6 +3,7 @@
 {
   imports = [
     # ./autostart.nix
+    ./btop
     ./wm
     ./gpg.nix
     ./shell
