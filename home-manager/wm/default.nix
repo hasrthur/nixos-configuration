@@ -6,6 +6,7 @@
     ./hyprland
     ./hypridle.nix
     ./hyprlock
+    ./uwsm
     ./waybar
   ];
 }

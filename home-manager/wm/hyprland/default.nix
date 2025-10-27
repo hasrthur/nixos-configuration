@@ -4,11 +4,13 @@
   home.packages = with pkgs; [
     hyprcursor
     hyprland-per-window-layout
+    networkmanagerapplet
   ];
 
   wayland.windowManager.hyprland = {
     enable = true;
     extraConfig = builtins.readFile ./hypr.conf;
+    systemd.enable = false;
   };
 
   home = {
@@ -26,6 +28,27 @@
     enable = true;
     package = pkgs.wayprompt;
   };
+
+  # programs.ashell = {
+  #   enable = true;
+  #   systemd.enable = true;
+  #   settings = {
+  #     settings = {
+  #       lock_cmd = "hyprlock &";
+  #       audio_sinks_more_cmd = "pavucontrol -t 3";
+  #       audio_sources_more_cmd = "pavucontrol -t 4";
+  #       wifi_more_cmd = "nm-connection-editor";
+  #       vpn_more_cmd = "nm-connection-editor";
+  #       bluetooth_more_cmd = "blueman-manager";
+  #       remove_airplane_btn = true;
+  #       remove_idle_btn = true;
+  #     };
+  #   };
+  # };
+  # programs.quickshell.enable = true;
+  # programs.quickshell.systemd.enable = true;
+
+  # services.network-manager-applet.enable = true;
 
 #   xdg.portal =
 # {
