@@ -9,10 +9,10 @@ in {
 
   programs.rofi = {
     enable = true;
-    terminal = "uwsm app -- ${pkgs.ghostty}/bin/ghostty --class=local.ghostty.float";
+    terminal = "uwsm-app -- ${pkgs.ghostty}/bin/ghostty --class=local.ghostty.float";
     pass.enable = true;
     extraConfig = {
-      run-command = "uwsm app -- {cmd}";
+      run-command = "uwsm-app -- {cmd}";
     };
     theme = lib.mkMerge [{
       "*" = {
