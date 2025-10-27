@@ -5,6 +5,7 @@
     hyprcursor
     hyprland-per-window-layout
     networkmanagerapplet
+    wiremix
   ];
 
   wayland.windowManager.hyprland = {
