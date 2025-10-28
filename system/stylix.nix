@@ -23,10 +23,10 @@
       # sansSerif = config.stylix.fonts.monospace;
 
       sizes = {
-        applications = 16;
-        desktop = 16;
-        popups = 16;
-        terminal = 16;
+        applications = 18;
+        desktop = 18;
+        popups = 18;
+        terminal = 18;
       };
     };
     # opacity = {
