@@ -1,7 +1,6 @@
 { ... }:
 
 {
-  # Use the systemd-boot EFI boot loader.
   boot = {
     loader = {
       systemd-boot = {
@@ -23,6 +22,11 @@
         "rd.systemd.show_status=auto"
     ];
 
-    plymouth.enable = true;
+    plymouth = {
+      enable = true;
+      extraConfig = ''
+        DeviceTimeout=0
+      '';
+    };
   };
 }
