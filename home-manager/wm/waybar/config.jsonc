@@ -12,6 +12,7 @@
     "bluetooth",
     "network",
     "pulseaudio",
+    "pulseaudio#mic",
     "cpu",
     "battery"
   ],
@@ -106,7 +107,7 @@
   },
   "pulseaudio": {
     "format": "{icon}",
-    "on-click": "$TERMINAL --class=terminal.float -e wiremix",
+    "on-click": "$TERMINAL --class=terminal.float -e wiremix --tab output",
     "on-click-right": "pamixer -t",
     "tooltip-format": "Playing at {volume}%",
     "scroll-step": 5,
@@ -114,6 +115,16 @@
     "format-icons": {
       "default": ["", "", ""]
     }
+  },
+  "pulseaudio#mic": {
+    "format": "{format_source}",
+    "on-click": "$TERMINAL --class=terminal.float -e wiremix --tab input",
+    "on-click-right": "pamixer --default-source -t",
+    "on-scroll-up": null,
+    "on-scroll-down": null,
+    "format-source": "",
+    "format-source-muted": "",
+    "tooltip": false
   },
   "group/tray-expander": {
     "orientation": "inherit",

@@ -40,6 +40,10 @@
   margin: 0 7.5px;
 }
 
+#pulseaudio.mic:not(.source-muted) {
+  color: @base08;
+}
+
 #language {
   padding-right: 14px;
 }
