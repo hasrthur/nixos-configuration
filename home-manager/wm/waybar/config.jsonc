@@ -17,8 +17,8 @@
   ],
   "hyprland/language": {
     "format": "{}",
-    "format-en": "EN",
-    "format-uk": "UA"
+    "format-en": "en",
+    "format-uk": "ua"
   },
   "hyprland/workspaces": {
     "disable-scroll": true,
