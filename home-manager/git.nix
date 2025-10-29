@@ -3,30 +3,32 @@
 {
   programs.git = {
     enable = true;
-    userName = "Artur Borysov";
-    userEmail = "arthur.borisow@gmail.com";
     signing = {
       key = null;
       signByDefault = true;
     };
-    extraConfig = {
+    settings = {
+      user = {
+        name = "Artur Borysov";
+        email = "arthur.borisow@gmail.com";
+      };
       core.autocrlf = "input";
       push.default = "simple";
       pull.rebase = true;
       rerere.enabled = true;
       init.defaultBranch = "main";
       color.ui = "auto";
-    };
-    aliases = {
-      ch = "checkout";
-      st = "status";
-      ls = "log --pretty=format:'%C(yellow)%h\ %ad%Cred%d\ %Creset%s%Cblue\ [%cn]' --decorate --date=short";
-      ll = "log --pretty=format:'%C(yellow)%h%Cred%d\ %Creset%s%Cblue\ [%cn]' --decorate --numstat --date=short";
-      old = "branch -r --sort=committerdate --format='[%(color:green)%(committerdate:relative)%(color:reset)] (%(authorname)) %(HEAD) %(color:yellow)%(refname:short)%(color:reset) - %(color:red)%(objectname:short)%(color:reset) - %(contents:subject)'";
+      alias = {
+        ch = "checkout";
+        st = "status";
+        ls = "log --pretty=format:'%C(yellow)%h\ %ad%Cred%d\ %Creset%s%Cblue\ [%cn]' --decorate --date=short";
+        ll = "log --pretty=format:'%C(yellow)%h%Cred%d\ %Creset%s%Cblue\ [%cn]' --decorate --numstat --date=short";
+        old = "branch -r --sort=committerdate --format='[%(color:green)%(committerdate:relative)%(color:reset)] (%(authorname)) %(HEAD) %(color:yellow)%(refname:short)%(color:reset) - %(color:red)%(objectname:short)%(color:reset) - %(contents:subject)'";
+      };
     };
     ignores = [
       "/.idea"
     ];
-    diff-so-fancy.enable = true;
   };
+  programs.diff-so-fancy.enable = true;
 }
