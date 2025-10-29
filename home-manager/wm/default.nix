@@ -2,10 +2,11 @@
 
 {
   imports = [
-    ./rofi.nix
-    ./hyprland
+    ./hidden-applications.nix
     ./hypridle.nix
+    ./hyprland
     ./hyprlock
+    ./rofi.nix
     ./uwsm
     ./waybar
   ];

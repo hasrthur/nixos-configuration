@@ -24,12 +24,14 @@ in {
       window = {
         location = mkLiteral "center";
         width = 640;
-        border-radius = 8;
+        border-radius = 4;
       };
 
       inputbar = {
         padding = mkLiteral "12px";
         spacing = mkLiteral "12px";
+        border = mkLiteral "2px 2px 2px 2px";
+
         children = map mkLiteral [ "entry" ];
       };
 
@@ -56,7 +58,7 @@ in {
         columns = 1;
 
         fixed-height = false;
-        border = mkLiteral "1px 0 0";
+        border = mkLiteral "0px 2px 2px";
       };
 
       element = {

@@ -3,8 +3,10 @@
 {
   home.packages = with pkgs; [
     blueberry
+
     hyprcursor
     hyprland-per-window-layout
+
     networkmanagerapplet
 
     pamixer
