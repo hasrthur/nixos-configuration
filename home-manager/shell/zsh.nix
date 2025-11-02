@@ -1,4 +1,4 @@
-{ config, ... }:
+{ config, username, ... }:
 
 {
   programs.zsh = {
@@ -7,12 +7,20 @@
     syntaxHighlighting.enable = true;
     dotDir = config.home.homeDirectory + "/.config/zsh";
     initContent = ''
+      alias cat=bat
 
-    alias cat=bat
+      export PATH=/home/artur/.local/share/JetBrains/Toolbox/scripts:$PATH
 
-    export PATH=/home/artur/.local/share/JetBrains/Toolbox/scripts:$PATH
+      ssh-add ~/.ssh/github &> /dev/null
 
-    ssh-add ~/.ssh/github &> /dev/null
+      set -o emacs
+
+      if [ -t 0 ]; then
+        export GPG_TTY="$(tty)"
+        export PINENTRY_USER_DATA=USE_TTY=1
+      fi
     '';
   };
+
+  home.shell.enableZshIntegration = true;
 }

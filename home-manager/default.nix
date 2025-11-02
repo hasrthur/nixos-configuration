@@ -9,6 +9,7 @@
     ./shell
     ./ghostty.nix
     ./nh.nix
+    ./nvim.nix
     ./stylix.nix
     ./ssh.nix
     ./vscode
@@ -31,7 +32,6 @@
 
   home.packages = with pkgs; [
     bat
-    vim
     tig
 
     devcontainer
@@ -40,8 +40,6 @@
     slack
     telegram-desktop
     viber
-
-    woeusb
 
     devenv
 
