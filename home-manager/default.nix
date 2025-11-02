@@ -8,6 +8,7 @@
     ./gpg.nix
     ./shell
     ./ghostty.nix
+    ./nh.nix
     ./stylix.nix
     ./ssh.nix
     ./vscode
