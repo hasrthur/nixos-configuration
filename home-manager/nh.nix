@@ -1,9 +1,9 @@
-{ ... }:
+{ username, ... }:
 
 {
   programs.nh = {
     enable = true;
-    flake = ".nixos";
+    flake = "/home/${username}/.nixos";
     clean = {
       enable = true;
       extraArgs = "--keep 5";
