@@ -4,19 +4,20 @@
   imports = [
     # ./autostart.nix
     ./btop
-    ./wm
-    ./gpg.nix
-    ./shell
+    ./clipboard.nix
     ./ghostty.nix
+    ./git.nix
+    ./gpg.nix
+    ./just
     ./nh.nix
     ./nvim.nix
-    ./stylix.nix
+    ./shell
     ./ssh.nix
+    ./stylix.nix
+    ./thunderbird.nix
     ./vscode
     ./yazi
-    ./git.nix
-    ./thunderbird.nix
-    ./just
+    ./wm
     # ./gnome
     # ./plasma
   ];
@@ -65,7 +66,6 @@
   services.udiskie.enable = true;
 
   services.swaync.enable = true;
-
 
     # plasma 6 is kinda broken with stylix
   # stylix.targets.kde.enable = false;
