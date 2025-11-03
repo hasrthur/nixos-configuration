@@ -49,14 +49,5 @@
   #   };
   # };
 
-  services = {
-    xserver = {
-      xkb = {
-        layout = "us,ua";
-        options = "grp:ctrl_space_toggle";
-      };
-    };
-  };
-
   services.udisks2.enable = true;
 }
