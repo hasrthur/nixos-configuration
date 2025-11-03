@@ -23,10 +23,10 @@
       # sansSerif = config.stylix.fonts.monospace;
 
       sizes = {
-        applications = 18;
-        desktop = 18;
-        popups = 18;
-        terminal = 18;
+        applications = 14;
+        desktop = 14;
+        popups = 14;
+        terminal = 14;
       };
     };
     # opacity = {
@@ -40,8 +40,6 @@
       nixos-icons.enable = true;
     };
     cursor = {
-      # name = "Adwaita";
-      # package = pkgs.adwaita-icon-theme;
       name = "BreezeX-RosePineDawn-Linux";
       package = pkgs.rose-pine-cursor;
       size = 36;
