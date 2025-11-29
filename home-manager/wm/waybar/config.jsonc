@@ -88,7 +88,7 @@
     "format-disabled": "󰂲",
     "format-connected": "",
     "tooltip-format": "Devices connected: {num_connections}",
-    "on-click": "blueberry"
+    "on-click": "bzmenu -l rofi"
   },
   "privacy": {
     "icon-spacing": 4,
@@ -106,9 +106,8 @@
     ]
   },
   "pulseaudio": {
-    "format": "{icon}",
-    "on-click": "$TERMINAL --class=terminal.float -e wiremix --tab output",
-    "on-click-right": "pamixer -t",
+    "format": "{icon} {volume}%",
+    "on-click": "pwmenu -l rofi -m output-devices",
     "tooltip-format": "Playing at {volume}%",
     "scroll-step": 5,
     "format-muted": "",
@@ -118,11 +117,10 @@
   },
   "pulseaudio#mic": {
     "format": "{format_source}",
-    "on-click": "$TERMINAL --class=terminal.float -e wiremix --tab input",
-    "on-click-right": "pamixer --default-source -t",
+    "on-click": "pwmenu -l rofi -m input-devices",
     "on-scroll-up": null,
     "on-scroll-down": null,
-    "format-source": "",
+    "format-source": " {volume}%",
     "format-source-muted": "",
     "tooltip": false
   },

@@ -5,6 +5,8 @@ let
 in {
   home.packages = with pkgs; [
     rofi-power-menu
+    bzmenu
+    pwmenu
   ];
 
   programs.rofi = {
