@@ -25,10 +25,10 @@
 
   services.hyprpolkitagent.enable = true;
 
-  programs.wayprompt = {
-    enable = true;
-    package = pkgs.wayprompt;
-  };
+  # programs.wayprompt = {
+  #   enable = true;
+  #   package = pkgs.wayprompt;
+  # };
 
   services.swayosd.enable = true;
   services.playerctld.enable = true;

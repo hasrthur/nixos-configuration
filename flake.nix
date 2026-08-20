@@ -20,6 +20,10 @@
       url = "github:danth/stylix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    claude-code = {
+      url = "github:sadjow/claude-code-nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs = { self, nixpkgs, disko, home-manager, stylix, ... }@inputs:
@@ -41,6 +45,7 @@
                 useUserPackages = true;
                 users."${username}" = import ./home-manager;
                 extraSpecialArgs = args;
+                backupFileExtension = "backup";
                 # sharedModules = [ plasma-manager.homeModules.plasma-manager ];
               };
             }

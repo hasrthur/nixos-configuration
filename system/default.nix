@@ -18,6 +18,7 @@
     ./nix.nix
     ./shell.nix
     ./stylix.nix
+    ./sudo.nix
     ./timezone.nix
     ./users.nix
     ./video-graphics.nix
