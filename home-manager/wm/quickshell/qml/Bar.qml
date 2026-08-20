@@ -40,6 +40,7 @@ Item {
         anchors.verticalCenter: parent.verticalCenter
         spacing: Theme.widgetGap
 
+        Privacy {}
         Tray {}
         KeyboardLayout {}
         Bluetooth {}
