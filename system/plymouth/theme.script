@@ -1,0 +1,139 @@
+# Boot splash: spinning NixOS logo with an Omarchy-style passphrase entry.
+#
+# The logo and spinner come from the Stylix Plymouth theme; the passphrase
+# dialog (lock icon, entry field, bullets, and no prompt text) follows the
+# Omarchy theme.
+
+center_x = Window.GetWidth() / 2;
+center_y = Window.GetHeight() / 2;
+
+### BACKGROUND ###
+
+Window.SetBackgroundTopColor(@background@);
+Window.SetBackgroundBottomColor(@background@);
+
+### LOGO ###
+
+logo.image = Image("logo.png");
+logo.sprite = Sprite(logo.image);
+logo.sprite.SetPosition(
+  center_x - (logo.image.GetWidth() / 2),
+  center_y - (logo.image.GetHeight() / 2),
+  1
+);
+
+logo.spinner_active = 1;
+logo.spinner_index = 0;
+logo.spinner_max_third = 32;
+logo.spinner_max = logo.spinner_max_third * 3;
+
+real_index = 0;
+for (third = 0; third < 3; third++) {
+  for (index = 0; index < logo.spinner_max_third; index++) {
+    subthird = index / logo.spinner_max_third;
+    angle = (third + ((Math.Sin(Math.Pi * (subthird - 0.5)) / 2) + 0.5)) / 3;
+    logo.spinner_image[real_index] = logo.image.Rotate(2 * Math.Pi * angle);
+    real_index++;
+  }
+}
+
+fun activate_spinner () {
+  logo.spinner_active = 1;
+}
+
+fun deactivate_spinner () {
+  logo.spinner_active = 0;
+  logo.sprite.SetImage(logo.image);
+}
+
+fun refresh_callback () {
+  if (logo.spinner_active) {
+    logo.spinner_index = (logo.spinner_index + 1) % (logo.spinner_max * 2);
+    logo.sprite.SetImage(logo.spinner_image[Math.Int(logo.spinner_index / 2)]);
+  }
+}
+
+Plymouth.SetRefreshFunction(refresh_callback);
+
+### PASSPHRASE ENTRY ###
+
+entry.image = Image("entry.png");
+entry.x = center_x - (entry.image.GetWidth() / 2);
+entry.y = center_y + @logoRadius@ + @entryGap@;
+entry.sprite = Sprite(entry.image);
+entry.sprite.SetPosition(entry.x, entry.y, 10001);
+entry.sprite.SetOpacity(0);
+
+lock.source = Image("lock.png");
+lock.height = entry.image.GetHeight() * 0.8;
+lock.width = lock.source.GetWidth() * lock.height / lock.source.GetHeight();
+lock.sprite = Sprite(lock.source.Scale(lock.width, lock.height));
+lock.sprite.SetPosition(
+  entry.x - lock.width - @lockGap@,
+  entry.y + ((entry.image.GetHeight() - lock.height) / 2),
+  10001
+);
+lock.sprite.SetOpacity(0);
+
+bullet.source = Image("bullet.png");
+bullet.image = bullet.source.Scale(@bulletSize@, @bulletSize@);
+bullets = null;
+
+fun hide_bullets () {
+  for (index = 0; bullets[index]; index++) {
+    bullets[index].SetOpacity(0);
+  }
+}
+
+fun hide_entry () {
+  entry.sprite.SetOpacity(0);
+  lock.sprite.SetOpacity(0);
+  hide_bullets();
+}
+
+# prompt_text is deliberately unused: no "please enter passphrase for disk
+# ..." line, just the lock, the field and the bullets.
+fun password_callback (prompt_text, bullet_count) {
+  deactivate_spinner();
+  hide_bullets();
+
+  entry.sprite.SetOpacity(1);
+  lock.sprite.SetOpacity(1);
+
+  count = bullet_count;
+  if (count > @maxBullets@) {
+    count = @maxBullets@;
+  }
+
+  for (index = 0; index < count; index++) {
+    if (!bullets[index]) {
+      bullets[index] = Sprite(bullet.image);
+      bullets[index].SetPosition(
+        entry.x + @bulletInset@ + (index * (@bulletSize@ + @bulletGap@)),
+        entry.y + ((entry.image.GetHeight() - @bulletSize@) / 2),
+        10002
+      );
+    }
+    bullets[index].SetOpacity(1);
+  }
+}
+
+Plymouth.SetDisplayPasswordFunction(password_callback);
+
+### NORMAL ###
+
+fun normal_callback () {
+  hide_entry();
+  activate_spinner();
+}
+
+Plymouth.SetDisplayNormalFunction(normal_callback);
+
+### QUIT ###
+
+fun quit_callback () {
+  hide_entry();
+  deactivate_spinner();
+}
+
+Plymouth.SetQuitFunction(quit_callback);

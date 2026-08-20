@@ -16,6 +16,7 @@
     ./media.nix
     ./networking.nix
     ./nix.nix
+    ./plymouth
     ./shell.nix
     ./stylix.nix
     ./sudo.nix
