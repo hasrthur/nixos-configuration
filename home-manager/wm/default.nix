@@ -9,6 +9,5 @@
     ./quickshell
     ./rofi.nix
     ./uwsm
-    ./waybar
   ];
 }
