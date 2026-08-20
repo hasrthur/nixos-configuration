@@ -161,8 +161,8 @@ runs alongside it.
 ## Git conventions
 
 - **Never add a `Co-Authored-By` trailer.** No commit in this history has one.
-- **Show the proposed commit message in the reply and stop.** Artur reviews wording
-  and commits himself; don't run `git commit` unless asked in that turn.
+- Committing directly is fine. Show the message in the reply as well, so wording
+  stays reviewable.
 - Small changes go to `main`; larger multi-step work gets a branch (e.g.
   `quickshell`). Offer rather than assume.
 
