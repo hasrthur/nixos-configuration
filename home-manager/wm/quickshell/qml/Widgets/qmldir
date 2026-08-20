@@ -3,5 +3,6 @@ Audio 1.0 Audio.qml
 Clock 1.0 Clock.qml
 KeyboardLayout 1.0 KeyboardLayout.qml
 Microphone 1.0 Microphone.qml
+Network 1.0 Network.qml
 Tray 1.0 Tray.qml
 Workspaces 1.0 Workspaces.qml
