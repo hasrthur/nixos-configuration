@@ -91,6 +91,8 @@ let
   };
 in
 {
+  imports = [ ./commands ];
+
   home.packages = [
     pkgs.quickshell
     wm-shell
