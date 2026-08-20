@@ -303,7 +303,7 @@ PopupWindow {
                         width: root.checkColumn
                         horizontalAlignment: Text.AlignHCenter
                         visible: root.checkColumn > 0 && !row.modelData.isSeparator
-                        text: row.modelData.checkState === Qt.Checked ? "" : ""
+                        text: row.modelData.checkState === Qt.Checked ? "\uf00c" : ""
                         color: Theme.foreground
                         font.family: Theme.fontFamily
                         font.pointSize: Theme.fontSize

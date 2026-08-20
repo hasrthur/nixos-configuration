@@ -163,6 +163,19 @@ Design rules that shaped it, and should be kept:
   on base00. It also needs `//@ pragma UseQApplication` on the root file, which
   drags QtWidgets in — Omarchy sets no pragmas and never uses `QsMenuAnchor` for
   exactly this reason. `qs.Ui.Menu` renders a `QsMenuHandle` directly.
+- **Write Nerd Font glyphs as `\uXXXX` escapes, never literal characters.** Literal
+  private-use codepoints do not survive every editing path and silently become
+  empty strings — an empty glyph collapses a bar button to nothing, which reads as
+  a missing icon rather than a bug. Verify escapes survived in the *built* store
+  tree, not just the source.
+- **`pactl` is not installed; only `wpctl` is.** Every Omarchy audio script is
+  pactl-based, so any `wm-audio-*` port needs rewriting against wpctl/wireplumber
+  (or `pulseaudio`'s client tools added).
+- **PipeWire defaults are not guaranteed.** This machine has two input devices and
+  no default source among them, so `Pipewire.defaultAudioSource` is null. Resolve
+  through `defaultAudioSource` → `preferredDefaultAudioSource` → first non-sink
+  non-stream audio node, and note that `PwNode.audio` is only populated for nodes
+  held in a `PwObjectTracker`.
 - **Each submenu level needs its own `QsMenuOpener`.** A child entry is owned by
   its parent opener's children model, so re-pointing one opener at the child
   destroys the entry being displayed and the submenu renders empty.

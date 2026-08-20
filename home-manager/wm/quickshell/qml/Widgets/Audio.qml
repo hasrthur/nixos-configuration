@@ -16,12 +16,12 @@ BarButton {
     readonly property real volume: sink?.audio?.volume ?? 0
     readonly property bool muted: sink?.audio?.muted ?? true
 
-    // Nerd Font speaker ramp: off, low, high.
+    // Nerd Font speaker ramp. Written as escapes so the codepoints survive.
     readonly property string glyph: {
-        if (muted) return "";
-        if (volume < 0.34) return "";
-        if (volume < 0.67) return "";
-        return "";
+        if (muted) return "\ueee8";
+        if (volume < 0.34) return "\uf026";
+        if (volume < 0.67) return "\uf027";
+        return "\uf028";
     }
 
     function setVolume(value) {

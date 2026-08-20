@@ -43,5 +43,6 @@ Item {
         Tray {}
         KeyboardLayout {}
         Audio {}
+        Microphone {}
     }
 }
