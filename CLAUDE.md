@@ -152,8 +152,20 @@ Design rules that shaped it, and should be kept:
   `writeShellApplication` derivations, so the drawing layer stays replaceable.
 - QML modules are `qs.Commons` (Theme), `qs.Ui` (shared widgets), `qs.Widgets`
   (bar widgets), each with a `qmldir`.
-- `//@ pragma UseQApplication` on the root file is required for `QsMenuAnchor`
-  platform menus (tray right-click).
+- **Port Omarchy's logic and numbers, never their components.** Their `Ui/*` types
+  are parameterised against their own `Style`/`Color`/`Border` singletons (which
+  read a live theme and `hyprctl getoption` at runtime) and against a bar popout
+  coordinator. Lifting one drags in ~1300 lines of the runtime configurability
+  this shell deliberately does without. Read their file, take the ownership rules
+  and the measurements, write our own.
+- **Menus are drawn here, not by Qt.** `QsMenuAnchor` hands the menu to the Qt
+  style, so Kvantum paints it on `window.color` (base01) and it cannot match a bar
+  on base00. It also needs `//@ pragma UseQApplication` on the root file, which
+  drags QtWidgets in — Omarchy sets no pragmas and never uses `QsMenuAnchor` for
+  exactly this reason. `qs.Ui.Menu` renders a `QsMenuHandle` directly.
+- **Each submenu level needs its own `QsMenuOpener`.** A child entry is owned by
+  its parent opener's children model, so re-pointing one opener at the child
+  destroys the entry being displayed and the submenu renders empty.
 
 Not autostarted or supervised while it is being built out. The old stack still
 runs alongside it.
@@ -161,8 +173,8 @@ runs alongside it.
 ## Git conventions
 
 - **Never add a `Co-Authored-By` trailer.** No commit in this history has one.
-- Committing directly is fine. Show the message in the reply as well, so wording
-  stays reviewable.
+- **Never run `git commit` unasked. Always ask first.** Propose the message in the
+  reply and wait, every time, however small the change.
 - Small changes go to `main`; larger multi-step work gets a branch (e.g.
   `quickshell`). Offer rather than assume.
 
