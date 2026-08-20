@@ -42,6 +42,7 @@ Item {
 
         Tray {}
         KeyboardLayout {}
+        Bluetooth {}
         Network {}
         Audio {}
         Microphone {}
