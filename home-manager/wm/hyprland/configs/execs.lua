@@ -2,6 +2,12 @@
 local vars = require("vars")
 
 hl.on("hyprland.start", function()
+    -- The bar. Launched under uwsm so it lands in the session's own unit and its
+    -- output reaches the journal; deliberately unsupervised, so a crash stays
+    -- visible while the shell is still being built out. Restart by hand with
+    -- `wm-shell-launch`.
+    hl.exec_cmd("uwsm app -- wm-shell-launch")
+
     hl.exec_cmd("uwsm app -- hyprland-per-window-layout")
 
     hl.exec_cmd(vars.terminal)

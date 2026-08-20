@@ -6,8 +6,8 @@
     ./hypridle.nix
     ./hyprland
     ./hyprlock
+    ./quickshell
     ./rofi.nix
     ./uwsm
-    ./waybar
   ];
 }
