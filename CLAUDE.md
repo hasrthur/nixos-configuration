@@ -163,6 +163,13 @@ Design rules that shaped it, and should be kept:
   on base00. It also needs `//@ pragma UseQApplication` on the root file, which
   drags QtWidgets in — Omarchy sets no pragmas and never uses `QsMenuAnchor` for
   exactly this reason. `qs.Ui.Menu` renders a `QsMenuHandle` directly.
+- **The waybar config is a mix of intent and workaround — ask before copying.**
+  `home-manager/wm/waybar/` records what Artur wanted *and* what waybar could not
+  do. Its smaller tray icons and its disabled mic scroll (`on-scroll-up: null`)
+  were both compromises for waybar limitations, not preferences, and should not be
+  carried over. Its glyphs, clock format, workspace icons and colour rules
+  (e.g. `#pulseaudio.mic:not(.source-muted)` — red while live) are intent, and
+  should be. When it is not obvious which a line is, ask.
 - **Write Nerd Font glyphs as `\uXXXX` escapes, never literal characters.** Literal
   private-use codepoints do not survive every editing path and silently become
   empty strings — an empty glyph collapses a bar button to nothing, which reads as
