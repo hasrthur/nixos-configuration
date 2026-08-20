@@ -34,6 +34,7 @@ let
         readonly property int fontSize: ${toString fonts.sizes.popups}
 
         readonly property int barHeight: 34
+        readonly property int trayIconSize: 18
         readonly property int edgeGap: 12
         readonly property int widgetGap: 14
     }

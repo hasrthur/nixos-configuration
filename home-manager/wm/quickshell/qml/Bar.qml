@@ -6,6 +6,7 @@
 import QtQuick
 
 import qs.Commons
+import qs.Widgets
 
 Item {
     id: root
@@ -17,6 +18,8 @@ Item {
         anchors.leftMargin: Theme.edgeGap
         anchors.verticalCenter: parent.verticalCenter
         spacing: Theme.widgetGap
+
+        Workspaces {}
     }
 
     Row {
@@ -36,5 +39,8 @@ Item {
         anchors.rightMargin: Theme.edgeGap
         anchors.verticalCenter: parent.verticalCenter
         spacing: Theme.widgetGap
+
+        Tray {}
+        KeyboardLayout {}
     }
 }

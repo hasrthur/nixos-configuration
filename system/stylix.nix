@@ -39,6 +39,12 @@
       grub.useWallpaper = true;
       nixos-icons.enable = true;
     };
+    icons = {
+      enable = true;
+      package = pkgs.yaru-theme;
+      dark = "Yaru-dark";
+      light = "Yaru";
+    };
     cursor = {
       name = "BreezeX-RosePineDawn-Linux";
       package = pkgs.rose-pine-cursor;
