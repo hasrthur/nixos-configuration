@@ -134,10 +134,14 @@ top-level command and must not go through dispatch.
 
 ## The Quickshell shell (in progress)
 
-`home-manager/wm/quickshell/` is a from-scratch shell that will replace waybar,
-rofi, swaync, swayosd and hyprlock. It copies **Omarchy 4's behaviour** as
-inspiration; none of Omarchy's code is vendored and there is no Omarchy
-dependency.
+`home-manager/wm/quickshell/` is a from-scratch shell replacing the old desktop
+stack piece by piece. It copies **Omarchy 4's behaviour** as inspiration; none of
+Omarchy's code is vendored and there is no Omarchy dependency.
+
+**Done:** the bar (workspaces, clock, privacy, tray, keyboard layout, bluetooth,
+network, audio, microphone, cpu) and the tray menu. **waybar is retired.**
+**Still to replace:** swayosd, swaync, rofi-as-launcher, bzmenu/pwmenu/nm-applet,
+cliphist, hyprpolkitagent, hyprlock and hypridle.
 
 Design rules that shaped it, and should be kept:
 
@@ -163,21 +167,50 @@ Design rules that shaped it, and should be kept:
   on base00. It also needs `//@ pragma UseQApplication` on the root file, which
   drags QtWidgets in — Omarchy sets no pragmas and never uses `QsMenuAnchor` for
   exactly this reason. `qs.Ui.Menu` renders a `QsMenuHandle` directly.
-- **The waybar config is a mix of intent and workaround — ask before copying.**
-  `home-manager/wm/waybar/` records what Artur wanted *and* what waybar could not
-  do. Its smaller tray icons and its disabled mic scroll (`on-scroll-up: null`)
-  were both compromises for waybar limitations, not preferences, and should not be
-  carried over. Its glyphs, clock format, workspace icons and colour rules
-  (e.g. `#pulseaudio.mic:not(.source-muted)` — red while live) are intent, and
-  should be. When it is not obvious which a line is, ask.
+- **The retired waybar config is still the reference for intent — but it mixes
+  intent with workaround.** It now lives only in git history:
+  `git show b63e0da^:home-manager/wm/waybar/config.jsonc` (and `style.css`). Its
+  glyphs, clock format, workspace icons, spacing and colour rules
+  (e.g. `#pulseaudio.mic:not(.source-muted)` — red while live) are intent. Its
+  smaller tray icons and disabled mic scroll (`on-scroll-up: null`) were
+  compromises for waybar limitations, not preferences, and were deliberately not
+  carried over. When it is not obvious which a line is, ask.
+- **Verify a glyph's codepoint against the font before using it.** Existing in the
+  font is not the same as being the right icon: the privacy indicator first used
+  U+F03B0, which is `md-numeric_5_box_outline`, so it drew a literal "5". Only
+  glyphs copied from a known-good config are safe unchecked. Codepoints above the
+  BMP need surrogate pairs (Omarchy does the same).
+
+  ```bash
+  P=$(nix build --no-link --print-out-paths 'nixpkgs#python3Packages.fonttools')
+  PYTHONPATH=$(echo $P/lib/python3*/site-packages) python3 -c '
+  from fontTools.ttLib import TTFont
+  cmap = TTFont("<font.ttf>").getBestCmap()
+  print(cmap.get(0xF1483))   # -> md-monitor_share
+  '
+  ```
 - **Write Nerd Font glyphs as `\uXXXX` escapes, never literal characters.** Literal
   private-use codepoints do not survive every editing path and silently become
   empty strings — an empty glyph collapses a bar button to nothing, which reads as
   a missing icon rather than a bug. Verify escapes survived in the *built* store
   tree, not just the source.
-- **`pactl` is not installed; only `wpctl` is.** Every Omarchy audio script is
-  pactl-based, so any `wm-audio-*` port needs rewriting against wpctl/wireplumber
-  (or `pulseaudio`'s client tools added).
+- **Audio CLI stays native: `wpctl` for state, `pw-dump | jq` for enumeration.**
+  No `pactl`, so no `pkgs.pulseaudio` — the pipewire-pulse shim's client is a
+  supported tool but a layer removed from the graph the QML side already talks to
+  via `Quickshell.Services.Pipewire`.
+
+  Omarchy uses both (pactl 29 call sites, wpctl 7), split by task: `wpctl` for
+  `set-default`, mute and `@DEFAULT_AUDIO_SOURCE@` handles (which drive the
+  hardware mic-mute LED), `pactl -f json` for machine-readable listings that
+  `wpctl status` cannot give. Porting those listings means `pw-dump | jq` here.
+
+  Worth knowing before assuming a units mismatch: their own comment notes `pactl`
+  and `wpctl` report the *same* percentage scale (both raw volume over
+  `PA_VOLUME_NORM`). Volume numbers are interchangeable; it is the graph model that
+  differs.
+
+  Swapping one tool for another is not a showstopper for Artur in general — say so
+  and propose it rather than contorting around a missing tool.
 - **PipeWire defaults are not guaranteed.** This machine has two input devices and
   no default source among them, so `Pipewire.defaultAudioSource` is null. Resolve
   through `defaultAudioSource` → `preferredDefaultAudioSource` → first non-sink
@@ -187,8 +220,10 @@ Design rules that shaped it, and should be kept:
   its parent opener's children model, so re-pointing one opener at the child
   destroys the entry being displayed and the submenu renders empty.
 
-Not autostarted or supervised while it is being built out. The old stack still
-runs alongside it.
+It autostarts from `hyprland/configs/execs.lua` under `uwsm app`, so its output
+reaches the journal (`journalctl --user -b | grep -i quickshell`). Deliberately
+**unsupervised**: a crash should be visible rather than silently relaunched, and
+`wm-shell-launch` restarts it by hand. Since waybar is gone, a crash means no bar.
 
 ## Git conventions
 
@@ -197,6 +232,9 @@ runs alongside it.
   reply and wait, every time, however small the change.
 - Small changes go to `main`; larger multi-step work gets a branch (e.g.
   `quickshell`). Offer rather than assume.
+- **Merge branches with `--no-ff`.** Artur wants a merge commit even when a
+  fast-forward is possible, so the branch's commits stay visible as a unit. Do not
+  infer "linear history" from the fact that older commits happen to be linear.
 
 ## Dormant / intentional oddities
 
