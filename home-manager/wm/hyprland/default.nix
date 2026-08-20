@@ -10,19 +10,39 @@
 
   wayland.windowManager.hyprland = {
     enable = true;
-    configType = "hyprlang";
-    extraConfig = builtins.readFile ./hypr.conf;
+    configType = "lua";
+    extraConfig = builtins.readFile ./hypr.lua;
     systemd.enable = false;
-  };
 
-  home = {
-    file.".config/hypr" = {
-      source = ./configs;
-      recursive = true;
+    extraLuaFiles = {
+      # required explicitly by the modules below, so not auto-loaded
+      vars = {
+        content = ./configs/vars.lua;
+        autoLoad = false;
+      };
+
+      env = ./configs/env.lua;
+      execs = ./configs/execs.lua;
+      keyboard = ./configs/keyboard.lua;
+      monitors = ./configs/monitors.lua;
+      noborders = ./configs/noborders.lua;
+      windowrules = ./configs/windowrules.lua;
+      workspaces = ./configs/workspaces.lua;
+
+      bindings = ./configs/bindings.lua;
+      "bindings.clipboard" = ./configs/bindings/clipboard.lua;
+      "bindings.keyboard_layouts" = ./configs/bindings/keyboard_layouts.lua;
+      "bindings.launcher" = ./configs/bindings/launcher.lua;
+      "bindings.media" = ./configs/bindings/media.lua;
     };
 
-    pointerCursor.hyprcursor.enable = true;
+    xdph.settings.screencopy = {
+      max_fps = 60;
+      allow_token_by_default = true;
+    };
   };
+
+  home.pointerCursor.hyprcursor.enable = true;
 
   services.hyprpolkitagent.enable = true;
 

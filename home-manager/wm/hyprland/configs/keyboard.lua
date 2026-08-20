@@ -1,0 +1,6 @@
+hl.config({
+    input = {
+        kb_layout = "us,ua",
+        kb_options = "fkeys:basic_13-24",
+    },
+})
