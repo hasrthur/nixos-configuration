@@ -4,8 +4,8 @@
   programs.ssh = {
     enable = true;
     enableDefaultConfig = false;
-    matchBlocks = {
-      localhost.addKeysToAgent = "yes";
+    settings = {
+      "*".AddKeysToAgent = "yes";
     };
   };
 
