@@ -1,0 +1,80 @@
+{ config, pkgs, ... }:
+
+let
+  inherit (config.lib.stylix) colors;
+
+  fonts = config.stylix.fonts;
+
+  # The shell's entire visual vocabulary, resolved from Stylix at build time.
+  # There is no runtime theme layer and nothing watches a colour file: changing
+  # the theme is a rebuild, exactly as it is for every other themed thing here.
+  themeQml = pkgs.writeText "Theme.qml" ''
+    pragma Singleton
+
+    import QtQuick
+
+    // Generated from Stylix by home-manager/wm/quickshell/default.nix.
+    // Edit that module, not this file.
+    QtObject {
+        readonly property color background: "${colors.withHashtag.base00}"
+        readonly property color surface: "${colors.withHashtag.base01}"
+        readonly property color overlay: "${colors.withHashtag.base02}"
+        readonly property color muted: "${colors.withHashtag.base03}"
+        readonly property color foreground: "${colors.withHashtag.base05}"
+        readonly property color emphasis: "${colors.withHashtag.base07}"
+
+        readonly property color urgent: "${colors.withHashtag.base08}"
+        readonly property color warning: "${colors.withHashtag.base0A}"
+        readonly property color success: "${colors.withHashtag.base0B}"
+        readonly property color accent: "${colors.withHashtag.base0D}"
+
+        readonly property color barBackground: "${colors.withHashtag.base00}"
+
+        readonly property string fontFamily: "${fonts.monospace.name}"
+        readonly property int fontSize: ${toString fonts.sizes.popups}
+
+        readonly property int barHeight: 34
+        readonly property int edgeGap: 12
+        readonly property int widgetGap: 14
+    }
+  '';
+
+  shell = pkgs.runCommand "wm-shell-qml" { } ''
+    mkdir -p $out
+    cp -r ${./qml}/. $out/
+    chmod -R u+w $out
+    install -m444 ${themeQml} $out/Commons/Theme.qml
+  '';
+
+  # The seam. Nothing outside the QML tree may call `qs ipc` directly, so that
+  # replacing what draws the pixels stays a change to this file alone.
+  wm-shell = pkgs.writeShellApplication {
+    name = "wm-shell";
+    runtimeInputs = [ pkgs.quickshell ];
+    text = ''
+      if [ "$#" -lt 2 ]; then
+        echo "usage: wm-shell <target> <method> [args...]" >&2
+        exit 2
+      fi
+
+      exec qs ipc -p ${shell} call -- "$@"
+    '';
+  };
+
+  # No supervision and no relaunch loop, on purpose: while the shell is still
+  # being built out, a crash should be visible rather than papered over.
+  wm-shell-launch = pkgs.writeShellApplication {
+    name = "wm-shell-launch";
+    runtimeInputs = [ pkgs.quickshell ];
+    text = ''
+      exec qs -p ${shell} "$@"
+    '';
+  };
+in
+{
+  home.packages = [
+    pkgs.quickshell
+    wm-shell
+    wm-shell-launch
+  ];
+}
