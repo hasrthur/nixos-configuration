@@ -1,14 +1,14 @@
-// Status notifier items. QsMenuAnchor renders the item's own DBus menu, so there
-// is no menu model to build here: left click activates, middle click is the
-// item's secondary action, right click opens its menu.
+// Status notifier items. Left click activates, middle click is the item's
+// secondary action, right click opens its menu — drawn by qs.Ui.Menu rather than
+// handed to Qt, so it matches the bar.
 pragma ComponentBehavior: Bound
 
 import QtQuick
-import Quickshell
 import Quickshell.Services.SystemTray
 import Quickshell.Widgets
 
 import qs.Commons
+import qs.Ui
 
 Row {
     id: root
@@ -52,7 +52,12 @@ Row {
 
                 onClicked: function (event) {
                     if (event.button === Qt.RightButton) {
-                        if (entry.modelData.hasMenu) itemMenu.open();
+                        if (itemMenu.visible) {
+                            itemMenu.close();
+                        } else if (entry.modelData.hasMenu) {
+                            itemMenu.handle = entry.modelData.menu;
+                            itemMenu.visible = true;
+                        }
                     } else if (event.button === Qt.MiddleButton) {
                         entry.modelData.secondaryActivate();
                     } else {
@@ -61,11 +66,11 @@ Row {
                 }
             }
 
-            QsMenuAnchor {
+            Menu {
                 id: itemMenu
 
-                menu: entry.modelData.menu
-                anchor.item: entry
+                anchorItem: entry
+                titleHint: entry.modelData.title ?? ""
             }
         }
     }

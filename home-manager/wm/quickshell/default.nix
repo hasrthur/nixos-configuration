@@ -35,6 +35,20 @@ let
 
         readonly property int barHeight: 34
         readonly property int trayIconSize: 18
+        readonly property color menuBackground: "${colors.withHashtag.base00}"
+        readonly property color menuBorder: "${colors.withHashtag.base02}"
+        readonly property color menuHighlight: "${colors.withHashtag.base02}"
+
+        // Mirrors decoration.rounding in home-manager/wm/hyprland/hypr.lua, so
+        // popups are shaped like windows.
+        readonly property int menuRadius: 5
+        readonly property int menuBorderWidth: 2
+        readonly property int menuPadding: 14
+        readonly property int menuRowHeight: 30
+        readonly property int menuSeparatorHeight: 11
+        readonly property int menuIconSize: 16
+        // Distance between the bar and a popup hanging off it.
+        readonly property int menuGap: 5
         readonly property int edgeGap: 12
         readonly property int widgetGap: 14
     }

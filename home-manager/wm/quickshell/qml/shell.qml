@@ -1,5 +1,3 @@
-//@ pragma UseQApplication
-
 // Entry point for the desktop shell.
 //
 // Deliberately not configurable at runtime: the layout is this code. There is
