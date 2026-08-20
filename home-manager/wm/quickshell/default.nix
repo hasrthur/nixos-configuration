@@ -49,8 +49,12 @@ let
         readonly property int menuIconSize: 16
         // Distance between the bar and a popup hanging off it.
         readonly property int menuGap: 5
-        readonly property int edgeGap: 12
-        readonly property int widgetGap: 14
+        // waybar set the bar's own spacing to 0 and let each module's margin do
+        // the work (~7.5px a side, so ~15px between glyphs), with 8px at the bar
+        // edges. Match that: the visible gap here is BarButton's horizontal
+        // padding twice over (2 x 8 = 16), not an extra gap on top of it.
+        readonly property int edgeGap: 8
+        readonly property int widgetGap: 0
     }
   '';
 
