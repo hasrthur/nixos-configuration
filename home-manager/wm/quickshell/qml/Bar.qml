@@ -46,5 +46,6 @@ Item {
         Network {}
         Audio {}
         Microphone {}
+        Cpu {}
     }
 }
