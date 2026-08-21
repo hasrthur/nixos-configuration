@@ -60,6 +60,13 @@ let
         readonly property int indicatorSlot: 22
         readonly property int indicatorFontSize: 11
 
+        readonly property int launcherWidth: 620
+        readonly property int launcherTopMargin: 140
+        readonly property int launcherRowHeight: 34
+        readonly property int launcherMaxRows: 12
+        readonly property int launcherIconWidth: 28
+        readonly property int launcherAppIconSize: 22
+
         readonly property int notificationWidth: 380
         readonly property int notificationIconSize: 32
 
