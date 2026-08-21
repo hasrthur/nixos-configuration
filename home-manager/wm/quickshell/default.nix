@@ -78,11 +78,26 @@ let
     }
   '';
 
+  # The menu tree, generated from menu.nix. Same pattern as Theme: authored in
+  # Nix, baked into QML at build time, never read at runtime.
+  menuQml = pkgs.writeText "MenuTree.qml" ''
+    pragma Singleton
+
+    import QtQuick
+
+    // Generated from home-manager/wm/quickshell/menu.nix.
+    // Edit that file, not this one.
+    QtObject {
+        readonly property var routes: ${builtins.toJSON (import ./menu.nix)}
+    }
+  '';
+
   shell = pkgs.runCommand "wm-shell-qml" { } ''
     mkdir -p $out
     cp -r ${./qml}/. $out/
     chmod -R u+w $out
     install -m444 ${themeQml} $out/Commons/Theme.qml
+    install -m444 ${menuQml} $out/Commons/MenuTree.qml
   '';
 
   # The seam. Nothing outside the QML tree may call `qs ipc` directly, so that
