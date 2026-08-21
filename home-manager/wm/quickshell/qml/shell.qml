@@ -8,6 +8,7 @@ import Quickshell
 import qs.Commons
 
 ShellRoot {
+    Notifications {}
     Osd {}
 
     // One bar per output. Quickshell rebuilds the set as monitors come and go.
