@@ -5,8 +5,12 @@ let
   # than pactl against the pipewire-pulse shim: the QML side already talks to that
   # graph via Quickshell.Services.Pipewire, and one model beats two.
   #
-  # Nothing here notifies the OSD. The shell watches PipeWire and reacts to the
-  # state change itself, so these stay plain state-setters.
+  # The shell watches PipeWire and shows the OSD on any change, including ones
+  # made from outside these commands. But a keypress that changes nothing — volume
+  # up at 100%, or a mute debounced away — still deserves acknowledging, so each
+  # command pings the OSD when it is done. `|| true` because the shell not running
+  # is not a reason for the volume key to fail.
+  osdPing = "wm-shell osd show >/dev/null 2>&1 || true";
 
   wm-audio-output-volume = pkgs.writeShellApplication {
     name = "wm-audio-output-volume";
@@ -44,6 +48,8 @@ let
           exit 2
           ;;
       esac
+
+      ${osdPing}
     '';
   };
 
@@ -54,6 +60,8 @@ let
       # @DEFAULT_AUDIO_SOURCE@ rather than a resolved node id: on hardware with a
       # mic-mute LED, muting through the default handle is what drives it.
       wpctl set-mute @DEFAULT_AUDIO_SOURCE@ "''${1-toggle}"
+
+      ${osdPing}
     '';
   };
 
@@ -73,6 +81,8 @@ let
           exit 2
           ;;
       esac
+
+      ${osdPing}
     '';
   };
 
@@ -109,6 +119,8 @@ let
       done
 
       wpctl set-default "$next"
+
+      ${osdPing}
     '';
   };
 in
