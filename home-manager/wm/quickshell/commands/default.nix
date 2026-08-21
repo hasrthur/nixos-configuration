@@ -123,9 +123,36 @@ let
       ${osdPing}
     '';
   };
+  # Focus an existing window by application identity, for click-to-jump on a
+  # notification. Case-insensitive, because a sender's app_name and its window
+  # class rarely agree on capitalisation (Slack notifies as "Slack", its window
+  # class is "Slack"; vesktop notifies as "Vesktop", class "vesktop").
+  wm-hyprland-focus-app = pkgs.writeShellApplication {
+    name = "wm-hyprland-focus-app";
+    runtimeInputs = [ pkgs.hyprland pkgs.jq ];
+    text = ''
+      app="''${1-}"
+      if [ -z "$app" ]; then
+        echo "usage: wm-hyprland-focus-app <app-name>" >&2
+        exit 2
+      fi
+
+      address=$(hyprctl clients -j 2>/dev/null |
+        jq -r --arg pattern "$app" \
+          'first(.[] | select((.class // "") | test($pattern; "i"))).address // empty')
+
+      [ -n "$address" ] || exit 1
+
+      # The Lua config wraps dispatch, so the classic dispatcher string is a
+      # syntax error there; keep it as a fallback for a non-Lua config.
+      hyprctl dispatch "hl.dsp.focus({ window = \"address:$address\" })" >/dev/null 2>&1 ||
+        hyprctl dispatch focuswindow "address:$address" >/dev/null
+    '';
+  };
 in
 {
   home.packages = [
+    wm-hyprland-focus-app
     wm-audio-output-volume
     wm-audio-input-mute
     wm-audio-input-volume

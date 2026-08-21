@@ -30,6 +30,9 @@ let
 
         readonly property color barBackground: "${colors.withHashtag.base00}"
 
+        // Mutable shell state. The only thing this shell writes.
+        readonly property string stateDir: "${config.xdg.stateHome}/wm"
+
         readonly property string fontFamily: "${fonts.monospace.name}"
         readonly property int fontSize: ${toString fonts.sizes.popups}
 
@@ -51,6 +54,7 @@ let
         readonly property int menuGap: 5
 
         readonly property int notificationWidth: 380
+        readonly property int notificationIconSize: 32
 
         readonly property int osdMargin: 120
         readonly property int osdPadding: 16
@@ -101,6 +105,9 @@ let
 in
 {
   imports = [ ./commands ];
+
+  # FileView will not create the directory it writes into.
+  home.file."${config.xdg.stateHome}/wm/.keep".text = "";
 
   home.packages = [
     pkgs.quickshell

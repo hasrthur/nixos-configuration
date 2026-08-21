@@ -1,12 +1,14 @@
-// Notification popups.
+// Notification popups, plus a replayable history.
 //
-// The tracked list *is* the popup list: each card runs its own timer and calls
-// dismiss() when it fires, which drops the notification from
-// server.trackedNotifications and so from the view. Critical notifications get no
-// timer at all — the spec's point is that they wait for a person.
+// Live notifications come from the server's tracked set; each card runs its own
+// timer and dismisses itself, which drops it from that set. Critical ones get no
+// timer — the point of the urgency is that it waits for a person.
 //
-// Durations follow Omarchy: an app's requested expireTimeout is honoured but
-// clamped, so nothing flashes past unreadably and nothing camps on screen either.
+// History is written on arrival rather than on departure, which also captures
+// notifications silenced before they were ever seen — the exact thing "what did I
+// miss" wants. It is capped, persisted as JSON, and replayed as fresh cards
+// rather than shown in a panel: Omarchy has no notification centre and neither
+// does this.
 pragma ComponentBehavior: Bound
 
 import QtQuick
@@ -17,6 +19,7 @@ import Quickshell.Services.Notifications
 import Quickshell.Wayland
 
 import qs.Commons
+import qs.Ui
 
 PanelWindow {
     id: root
@@ -24,21 +27,37 @@ PanelWindow {
     readonly property int lowDuration: 5000
     readonly property int normalDuration: 8000
     readonly property int maxDuration: 30000
+    readonly property int historyLimit: 10
+    // Long enough to read a stack of ten and click one. A replay is a deliberate
+    // act, not an interruption, so it does not need to get out of the way fast.
+    readonly property int replayDuration: 20000
+
+    // Silencing hides the popup, not the notification: it stays tracked, so
+    // dismissAll and invokeLast still reach it, and it appears when silence lifts.
+    property bool silenced: false
+
+    // Replayed history entries, shown as cards until their own timer expires.
+    property var replayed: []
 
     function durationFor(notification) {
         if (notification.urgency === NotificationUrgency.Critical) return 0;
 
         const floor = notification.urgency === NotificationUrgency.Low
             ? root.lowDuration : root.normalDuration;
-        // expireTimeout is in milliseconds, and <= 0 means "you decide".
         const requested = Number(notification.expireTimeout) || 0;
         return Math.min(root.maxDuration, Math.max(floor, requested));
     }
 
-    // The spec reserves the "default" action for "the user clicked the
-    // notification itself", and says implementations need not display it. Drawing
-    // it anyway produced an unlabelled bordered box that reads as a stray
-    // checkbox — which is what Claude Code's notification looked like.
+    // Omarchy lets a narrow set through: user-action confirmations and critical
+    // alerts from notify-send. Chat apps set their own appName and fall outside it.
+    function bypassesSilence(notification) {
+        return notification.urgency === NotificationUrgency.Critical
+            && (notification.appName ?? "") === "notify-send";
+    }
+
+    // The spec reserves "default" for "the user clicked the notification itself"
+    // and says implementations need not draw it. Drawing it produced an
+    // unlabelled box that read as a stray checkbox.
     function buttonActions(notification) {
         return (notification.actions ?? []).filter(a => {
             return a.identifier !== "default" && String(a.text ?? "") !== "";
@@ -52,36 +71,118 @@ PanelWindow {
         return null;
     }
 
+    function record(notification) {
+        const entry = {
+            appName: notification.appName ?? "",
+            summary: notification.summary ?? "",
+            body: notification.body ?? "",
+            critical: notification.urgency === NotificationUrgency.Critical,
+            // Kept so a replayed card can still jump to the sender. Its actions
+            // cannot be replayed — the process that owned them has moved on — but
+            // the window it belongs to is usually still there.
+            target: root.focusTarget(notification),
+            icon: root.iconFor(notification)
+        };
+
+        // Newest first, so a cap trims the oldest.
+        const kept = [entry].concat(history.entries ?? []).slice(0, root.historyLimit);
+        history.entries = kept;
+        historyFile.writeAdapter();
+    }
+
+    function showHistory() {
+        const entries = (history.entries ?? []).slice();
+        if (entries.length === 0) return;
+
+        // Oldest at the top, so the stack reads in the order things happened.
+        root.replayed = entries.slice().reverse().map((e, i) => ({
+            key: "replay-" + Date.now() + "-" + i,
+            appName: e.appName ?? "",
+            summary: e.summary ?? "",
+            body: e.body ?? "",
+            critical: false,
+            // Absent on entries recorded before these were stored.
+            target: e.target ?? "",
+            icon: e.icon ?? ""
+        }));
+        replayTimer.restart();
+    }
+
+    function clearHistory() {
+        history.entries = [];
+        historyFile.writeAdapter();
+        root.replayed = [];
+    }
+
     function dismissLast() {
         const list = server.trackedNotifications?.values ?? [];
         if (list.length > 0) list[list.length - 1].dismiss();
-    }
-
-    // Silencing keeps notifications off screen without dropping them: they are
-    // still tracked, so dismissAll and invokeLast still reach them. Omarchy lets a
-    // narrow set through — user-action confirmations and critical alerts from
-    // notify-send, because chat apps set their own appName and so fall outside it.
-    property bool silenced: false
-
-    function bypassesSilence(notification) {
-        return notification.urgency === NotificationUrgency.Critical
-            && (notification.appName ?? "") === "notify-send";
-    }
-
-    function invokeLast() {
-        const list = server.trackedNotifications?.values ?? [];
-        if (list.length === 0) return;
-
-        const newest = list[list.length - 1];
-        const action = root.defaultAction(newest) ?? root.buttonActions(newest)[0] ?? null;
-        if (action) action.invoke();
-        else newest.dismiss();
     }
 
     function dismissAll() {
         // Copy first: dismissing mutates the model being walked.
         const list = (server.trackedNotifications?.values ?? []).slice();
         for (const n of list) n.dismiss();
+        root.replayed = [];
+    }
+
+    // Clicking a notification should take you to whatever sent it.
+    //
+    // Both halves are needed, not one or the other. Apps that register a
+    // "default" action expect it invoked; but a sender running *inside* another
+    // app's window — Claude Code in a terminal — registers one whose handler
+    // cannot raise a window it does not own, so invoking alone leaves the click
+    // doing nothing. Focusing as well is harmless for apps that raise themselves.
+    //
+    // desktopEntry is the reliable identifier and appName is not: Claude Code
+    // sends appName="" with desktopEntry="com.mitchellh.ghostty", while
+    // notify-send sends appName="notify-send" and no desktop entry.
+    function focusTarget(notification) {
+        const entry = String(notification.desktopEntry ?? "");
+        if (entry !== "") return entry;
+        return String(notification.appName ?? "");
+    }
+
+    // image is the notification's own picture; appIcon is the sending app's.
+    function iconFor(notification) {
+        const image = String(notification.image ?? "");
+        if (image !== "") return image;
+        return String(notification.appIcon ?? "");
+    }
+
+    function focusByName(target) {
+        if (String(target ?? "") === "") return;
+        focusApp.command = ["wm-hyprland-focus-app", String(target)];
+        focusApp.running = true;
+    }
+
+    function activate(notification) {
+        const action = root.defaultAction(notification);
+        if (action) action.invoke();
+
+        root.focusByName(root.focusTarget(notification));
+        notification.dismiss();
+    }
+
+    // Omarchy's invokeLast acts on the newest popup and does nothing when the
+    // screen is clear, which reads as a dead key. Falling back to the newest
+    // history entry keeps the gesture meaning "take me to the last thing that
+    // wanted me", whether or not its toast is still up.
+    function invokeLast() {
+        const list = server.trackedNotifications?.values ?? [];
+        if (list.length > 0) {
+            root.activate(list[list.length - 1]);
+            return;
+        }
+
+        const recent = (history.entries ?? [])[0];
+        if (recent) root.focusByName(recent.target);
+    }
+
+    readonly property var shown: {
+        const list = server.trackedNotifications?.values ?? [];
+        if (!root.silenced) return list;
+        return list.filter(n => root.bypassesSilence(n));
     }
 
     screen: {
@@ -105,26 +206,17 @@ PanelWindow {
     implicitWidth: Theme.notificationWidth
     implicitHeight: Math.max(1, stack.implicitHeight)
     color: "transparent"
-    readonly property var shown: {
-        const list = server.trackedNotifications?.values ?? [];
-        if (!root.silenced) return list;
-        return list.filter(n => root.bypassesSilence(n));
-    }
-
-    visible: shown.length > 0
+    visible: shown.length > 0 || replayed.length > 0
 
     NotificationServer {
         id: server
 
         // Without this the Notification object is destroyed the moment the
-        // signal handler returns, so trackedNotifications stays empty and nothing
-        // is ever drawn. Tracking is the opt-in that keeps it alive; the card's
-        // own dismiss() is what releases it again.
+        // handler returns, so trackedNotifications stays empty and nothing draws.
         onNotification: function (notification) {
             notification.tracked = true;
+            root.record(notification);
         }
-
-        // Silence hides the popup rather than the notification.
 
         keepOnReload: false
         bodySupported: true
@@ -133,7 +225,36 @@ PanelWindow {
         imageSupported: true
     }
 
-    // Reachable as `wm-shell notifications dismissLast` / `dismissAll`.
+    FileView {
+        id: historyFile
+
+        path: Theme.stateDir + "/notifications.json"
+        // The shell is the only writer; watching would only race with itself.
+        watchChanges: false
+        printErrors: false
+
+        JsonAdapter {
+            id: history
+
+            property var entries: []
+        }
+    }
+
+    Process {
+        id: focusApp
+
+        running: false
+    }
+
+    Timer {
+        id: replayTimer
+
+        interval: root.replayDuration
+
+        onTriggered: root.replayed = []
+    }
+
+    // Reachable as `wm-shell notifications <method>`.
     IpcHandler {
         target: "notifications"
 
@@ -156,6 +277,16 @@ PanelWindow {
             root.silenced = !root.silenced;
             return root.silenced ? "silenced" : "audible";
         }
+
+        function showHistory(): string {
+            root.showHistory();
+            return String((history.entries ?? []).length);
+        }
+
+        function clearHistory(): string {
+            root.clearHistory();
+            return "ok";
+        }
     }
 
     Column {
@@ -165,131 +296,52 @@ PanelWindow {
         spacing: Theme.menuGap
 
         Repeater {
+            model: root.replayed
+
+            NotificationCard {
+                required property var modelData
+
+                width: stack.width
+                appName: modelData.appName
+                summary: modelData.summary
+                body: modelData.body
+                critical: modelData.critical
+                iconSource: modelData.icon ?? ""
+                replayed: true
+
+                onDismissRequested: root.replayed = []
+                // A record is still worth clicking: jump to whatever sent it.
+                onDefaultRequested: {
+                    root.focusByName(modelData.target);
+                    root.replayed = [];
+                }
+            }
+        }
+
+        Repeater {
             model: root.shown
 
-            Rectangle {
+            NotificationCard {
                 id: card
 
                 required property var modelData
 
-                readonly property bool critical: modelData.urgency === NotificationUrgency.Critical
-
                 width: stack.width
-                implicitHeight: content.implicitHeight + Theme.menuPadding * 2
-                height: implicitHeight
-                color: Theme.menuBackground
-                radius: Theme.menuRadius
-                border.width: Theme.menuBorderWidth
-                // Critical is the one case worth colouring: it is also the one
-                // case that will not go away on its own.
-                border.color: card.critical ? Theme.urgent : Theme.menuBorder
+                appName: card.modelData.appName ?? ""
+                summary: card.modelData.summary ?? ""
+                body: card.modelData.body ?? ""
+                critical: card.modelData.urgency === NotificationUrgency.Critical
+                actionModel: root.buttonActions(card.modelData)
+                iconSource: root.iconFor(card.modelData)
+
+                onDismissRequested: card.modelData.dismiss()
+                onDefaultRequested: root.activate(card.modelData)
 
                 Timer {
                     running: !card.critical
                     interval: Math.max(1, root.durationFor(card.modelData))
 
                     onTriggered: card.modelData.dismiss()
-                }
-
-                MouseArea {
-                    anchors.fill: parent
-                    acceptedButtons: Qt.LeftButton | Qt.RightButton
-
-                    // Left click runs the default action where the app offered
-                    // one; anything else just dismisses.
-                    onClicked: function (event) {
-                        const fallback = root.defaultAction(card.modelData);
-                        if (event.button === Qt.LeftButton && fallback) {
-                            fallback.invoke();
-                        } else {
-                            card.modelData.dismiss();
-                        }
-                    }
-                }
-
-                Column {
-                    id: content
-
-                    anchors.left: parent.left
-                    anchors.right: parent.right
-                    anchors.top: parent.top
-                    anchors.margins: Theme.menuPadding
-                    spacing: 4
-
-                    Text {
-                        width: parent.width
-                        visible: text !== ""
-                        text: card.modelData.appName ?? ""
-                        color: card.critical ? Theme.urgent : Theme.muted
-                        elide: Text.ElideRight
-                        font.family: Theme.fontFamily
-                        font.pointSize: Theme.fontSize - 2
-                    }
-
-                    Text {
-                        width: parent.width
-                        visible: text !== ""
-                        text: card.modelData.summary ?? ""
-                        color: Theme.emphasis
-                        wrapMode: Text.WordWrap
-                        maximumLineCount: 2
-                        elide: Text.ElideRight
-                        font.family: Theme.fontFamily
-                        font.pointSize: Theme.fontSize
-                    }
-
-                    Text {
-                        width: parent.width
-                        visible: text !== ""
-                        text: card.modelData.body ?? ""
-                        color: Theme.foreground
-                        wrapMode: Text.WordWrap
-                        maximumLineCount: 6
-                        elide: Text.ElideRight
-                        textFormat: Text.StyledText
-                        font.family: Theme.fontFamily
-                        font.pointSize: Theme.fontSize - 1
-                    }
-
-                    Row {
-                        spacing: Theme.menuGap
-                        visible: root.buttonActions(card.modelData).length > 0
-                        topPadding: 4
-
-                        Repeater {
-                            model: root.buttonActions(card.modelData)
-
-                            Rectangle {
-                                required property var modelData
-
-                                implicitWidth: actionLabel.implicitWidth + Theme.menuPadding * 2
-                                implicitHeight: Math.round(Theme.fontSize * 2)
-                                radius: Math.max(2, Theme.menuRadius - 2)
-                                color: actionHover.containsMouse ? Theme.menuHighlight : "transparent"
-                                border.width: 1
-                                border.color: Theme.menuBorder
-
-                                Text {
-                                    id: actionLabel
-
-                                    anchors.centerIn: parent
-                                    text: parent.modelData.text ?? ""
-                                    color: Theme.foreground
-                                    font.family: Theme.fontFamily
-                                    font.pointSize: Theme.fontSize - 1
-                                }
-
-                                MouseArea {
-                                    id: actionHover
-
-                                    anchors.fill: parent
-                                    hoverEnabled: true
-
-                                    onClicked: parent.modelData.invoke()
-                                }
-                            }
-                        }
-                    }
                 }
             }
         }
