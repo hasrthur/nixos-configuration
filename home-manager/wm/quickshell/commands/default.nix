@@ -123,6 +123,97 @@ let
       ${osdPing}
     '';
   };
+  # Which desktop entries are hidden, respecting XDG precedence.
+  #
+  # Quickshell's DesktopEntries enumerates every applications directory without
+  # deduplicating by desktop id, so a NoDisplay override in an earlier directory
+  # does not shadow the package's own visible copy — both are yielded, and the
+  # visible one shows up in the launcher. Here that means every app hidden by
+  # hidden-applications.nix still appeared.
+  #
+  # This walks the directories in precedence order, keeps only the first file per
+  # id, and prints the ids whose winning file is hidden. Ported from Omarchy's
+  # shell/services/hidden-entries.sh, which exists for the same reason.
+  wm-hidden-desktop-entries = pkgs.writeShellApplication {
+    name = "wm-hidden-desktop-entries";
+    runtimeInputs = [ pkgs.findutils pkgs.coreutils ];
+    text = ''
+      desktop_names="''${XDG_CURRENT_DESKTOP:-Hyprland}"
+
+      declare -A seen
+
+      # OnlyShowIn/NotShowIn are colon-or-semicolon separated desktop names.
+      desktop_matches() {
+        local list=$1 name entry
+        local -a parts entries
+        IFS=":" read -ra parts <<< "$desktop_names"
+        IFS=";" read -ra entries <<< "$list"
+        for name in "''${parts[@]}"; do
+          [ -z "$name" ] && continue
+          for entry in "''${entries[@]}"; do
+            [ "$entry" = "$name" ] && return 0
+          done
+        done
+        return 1
+      }
+
+      is_hidden() {
+        local file=$1 in_entry=0 hidden=false only="" not="" line key value
+        while IFS= read -r line || [ -n "$line" ]; do
+          line=''${line%$'\r'}
+          case $line in
+            "["*"]")
+              [ "$line" = "[Desktop Entry]" ] && in_entry=1 || in_entry=0
+              continue
+              ;;
+          esac
+          [ "$in_entry" = 1 ] || continue
+          case $line in *=*) ;; *) continue ;; esac
+          key=''${line%%=*}
+          value=''${line#*=}
+          case $key in
+            Hidden|NoDisplay) [ "$value" = "true" ] && hidden=true ;;
+            OnlyShowIn) only=$value ;;
+            NotShowIn) not=$value ;;
+          esac
+        done < "$file"
+
+        [ "$hidden" = true ] && return 0
+        [ -n "$only" ] && ! desktop_matches "$only" && return 0
+        [ -n "$not" ] && desktop_matches "$not" && return 0
+        return 1
+      }
+
+      scan_dir() {
+        local dir=$1 file id rel
+        [ -d "$dir" ] || return 0
+        while IFS= read -r -d "" file; do
+          rel=''${file#"$dir"/}
+          rel=''${rel%.desktop}
+          id=''${rel//\//-}
+          # First directory wins, which is what makes an override an override.
+          [ -n "''${seen[$id]+set}" ] && continue
+          seen[$id]=1
+          # `if` rather than `&&`: under set -e a bare failing && list aborts the
+          # script, so the first entry that is *not* hidden would end the scan.
+          if is_hidden "$file"; then
+            printf '%s\n' "$id"
+          fi
+        # -L because on NixOS every applications directory, and every entry in
+        # it, is a symlink into the store. Omarchy's version omits it and works
+        # only because Arch puts real files in /usr/share/applications.
+        done < <(find -L "$dir" -type f -name '*.desktop' -print0 2>/dev/null | sort -z)
+      }
+
+      scan_dir "''${XDG_DATA_HOME:-$HOME/.local/share}/applications"
+
+      IFS=":" read -ra dirs <<< "''${XDG_DATA_DIRS:-/usr/local/share:/usr/share}"
+      for dir in "''${dirs[@]}"; do
+        scan_dir "$dir/applications"
+      done
+    '';
+  };
+
   # Focus an existing window by application identity, for click-to-jump on a
   # notification. Case-insensitive, because a sender's app_name and its window
   # class rarely agree on capitalisation (Slack notifies as "Slack", its window
@@ -152,6 +243,7 @@ let
 in
 {
   home.packages = [
+    wm-hidden-desktop-entries
     wm-hyprland-focus-app
     wm-audio-output-volume
     wm-audio-input-mute
