@@ -214,6 +214,24 @@ let
     '';
   };
 
+  # Run a command in a floating terminal that stays open afterwards, so the
+  # output of a rebuild or a generation list can actually be read. The float
+  # comes from the existing terminal.float window rule.
+  wm-terminal-run = pkgs.writeShellApplication {
+    name = "wm-terminal-run";
+    runtimeInputs = [ ];
+    text = ''
+      if [ "$#" -eq 0 ]; then
+        echo "usage: wm-terminal-run <command> [args...]" >&2
+        exit 2
+      fi
+
+      # `exec zsh` rather than exiting: a rebuild that fails should leave its
+      # error on screen, not close the window it was printed in.
+      exec ghostty --class=terminal.float -e zsh -c "$* ; echo ; echo '[done]' ; exec zsh"
+    '';
+  };
+
   # Focus an existing window by application identity, for click-to-jump on a
   # notification. Case-insensitive, because a sender's app_name and its window
   # class rarely agree on capitalisation (Slack notifies as "Slack", its window
@@ -244,6 +262,7 @@ in
 {
   home.packages = [
     wm-hidden-desktop-entries
+    wm-terminal-run
     wm-hyprland-focus-app
     wm-audio-output-volume
     wm-audio-input-mute
