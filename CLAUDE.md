@@ -83,6 +83,21 @@ Two warnings are known false positives: `PanelWindow is not creatable` and
 Quickshell). Repeater delegates reaching an outer `id` need
 `pragma ComponentBehavior: Bound`.
 
+**Restart the shell after every `nh os test`, or IPC breaks silently.** `wm-shell`
+embeds the store path of the tree it was built against, so a rebuilt-but-not-
+restarted shell leaves the command talking to a dead path — it prints "No running
+instances", and a keybinding calling it just does nothing at all. Both are easy to
+read as "the feature is broken".
+
+```bash
+systemctl --user stop wm-shell.service; systemctl --user reset-failed wm-shell.service
+systemd-run --user --collect --unit=wm-shell wm-shell-launch
+```
+
+`systemd-run` is the reliable way to launch it from a tool call: a plain `&` or
+even `setsid --fork` dies with the calling shell, which silently leaves the
+desktop with no bar.
+
 Linting is not enough — a live run catches what it cannot. `wm-shell-launch` runs
 the shell in the foreground with no supervision, deliberately, so crashes are
 visible.
