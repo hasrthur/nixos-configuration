@@ -37,7 +37,9 @@ let
         readonly property int fontSize: ${toString fonts.sizes.popups}
 
         readonly property int barHeight: 34
-        readonly property int trayIconSize: 18
+        // Matches a size the icon themes actually ship (16/22/32), so nothing
+        // is upscaled.
+        readonly property int trayIconSize: 22
         readonly property color menuBackground: "${colors.withHashtag.base00}"
         readonly property color menuBorder: "${colors.withHashtag.base02}"
         readonly property color menuHighlight: "${colors.withHashtag.base02}"
@@ -52,6 +54,11 @@ let
         readonly property int menuIconSize: 16
         // Distance between the bar and a popup hanging off it.
         readonly property int menuGap: 5
+
+        // Omarchy's indicators are caption-sized in a fixed slot, so the cluster
+        // does not reflow as modes come and go.
+        readonly property int indicatorSlot: 22
+        readonly property int indicatorFontSize: 11
 
         readonly property int notificationWidth: 380
         readonly property int notificationIconSize: 32
