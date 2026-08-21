@@ -100,6 +100,7 @@ PanelWindow {
                 app: entry,
                 aliases: aliases.concat(entry.keywords ?? []),
                 description: entry.genericName ?? "",
+                path: "",
                 // Apps hang off the apps route, so they sit one level below it.
                 depth: 2,
                 order: out.length
@@ -121,12 +122,16 @@ PanelWindow {
         return String(value ?? "").replace(/[._-]+/g, " ");
     }
 
-    // Everything a term may match as a substring: the label, the last id segment
-    // (so "generations" finds nix.generations even though its label does not say
-    // it), and an app's generic name and keywords.
+    // Everything a term may match as a substring: the label, the row's dotted
+    // path with the dots opened out, and an app's generic name and keywords.
+    //
+    // Omarchy searches the last id segment only, so typing a group's name finds
+    // the group and nothing under it. Searching the whole path instead means
+    // "nix" lists the group first — an exact label beats a path hit by four
+    // tiers — and then everything in it, which is what you wanted the group name
+    // to do. Apps carry no path, or "app:" would match every one of them.
     function nameSearchText(row) {
-        const leaf = root.segments(row.id).pop() ?? "";
-        return [row.label, root.searchableToken(leaf), (row.aliases ?? []).join(" ")]
+        return [row.label, row.path ?? "", (row.aliases ?? []).join(" ")]
             .join(" ").toLowerCase();
     }
 
@@ -204,6 +209,7 @@ PanelWindow {
                 app: null,
                 aliases: [],
                 description: entry.description ?? "",
+                path: root.searchableToken(id),
                 depth: root.segments(id).length,
                 order: i
             };
