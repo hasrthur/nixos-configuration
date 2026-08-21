@@ -1,4 +1,5 @@
 module qs.Ui
 BarButton 1.0 BarButton.qml
+BarIndicator 1.0 BarIndicator.qml
 Menu 1.0 Menu.qml
 NotificationCard 1.0 NotificationCard.qml
