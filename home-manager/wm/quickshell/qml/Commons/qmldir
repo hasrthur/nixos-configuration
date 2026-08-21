@@ -1,3 +1,4 @@
 module qs.Commons
+singleton MenuTree 1.0 MenuTree.qml
 singleton Theme 1.0 Theme.qml
 singleton Toggles 1.0 Toggles.qml

@@ -8,6 +8,7 @@ import Quickshell
 import qs.Commons
 
 ShellRoot {
+    Launcher {}
     Notifications {}
     Osd {}
 

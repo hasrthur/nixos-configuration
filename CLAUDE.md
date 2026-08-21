@@ -240,6 +240,13 @@ reaches the journal (`journalctl --user -b | grep -i quickshell`). Deliberately
 **unsupervised**: a crash should be visible rather than silently relaunched, and
 `wm-shell-launch` restarts it by hand. Since waybar is gone, a crash means no bar.
 
+## Order of work
+
+Finish the shell (the Track A rungs in the migration plan) before starting the
+window-manager work (Track B: keymap capabilities, launch-or-focus, scratchpad,
+look-and-feel). Track B has no technical dependency on the shell, so it is
+tempting to slot in early — don't. Artur has said twice that it waits.
+
 ## Git conventions
 
 - **Never add a `Co-Authored-By` trailer.** No commit in this history has one.
@@ -251,6 +258,9 @@ reaches the journal (`journalctl --user -b | grep -i quickshell`). Deliberately
   even when a fast-forward is possible, so the branch's commits stay visible as a
   unit. Do not infer "linear history" from the fact that older commits happen to
   be linear.
+- **Commit one at a time.** Commits are GPG-signed through `pinentry-rofi`, which
+  blocks until answered, so several `git commit` calls batched into one tool call
+  exceed the timeout and none of them land.
 - **One branch per topic; merge it when the topic is done.** Do not keep building
   the next piece of work on a finished branch — the name stops describing the
   contents, and the merge commit stops meaning anything. Merge, then branch fresh.

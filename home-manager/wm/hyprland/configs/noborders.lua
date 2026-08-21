@@ -17,3 +17,13 @@ hl.window_rule({
     border_size = 0,
     rounding = 0,
 })
+
+-- The launcher's backdrop covers the screen, so blurring it blurs the desktop
+-- behind the menu. It carries its own layer namespace precisely so this rule
+-- does not also hit the bar, which shares the default "quickshell" one.
+hl.layer_rule({
+    name = "launcher-blur",
+    match = { namespace = "wm-launcher" },
+
+    blur = true,
+})
