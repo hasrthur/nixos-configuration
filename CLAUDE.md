@@ -232,9 +232,13 @@ reaches the journal (`journalctl --user -b | grep -i quickshell`). Deliberately
   reply and wait, every time, however small the change.
 - Small changes go to `main`; larger multi-step work gets a branch (e.g.
   `quickshell`). Offer rather than assume.
-- **Merge branches with `--no-ff`.** Artur wants a merge commit even when a
-  fast-forward is possible, so the branch's commits stay visible as a unit. Do not
-  infer "linear history" from the fact that older commits happen to be linear.
+- **Merge branches with `--no-ff`, never `--ff-only`.** Artur wants a merge commit
+  even when a fast-forward is possible, so the branch's commits stay visible as a
+  unit. Do not infer "linear history" from the fact that older commits happen to
+  be linear.
+- **One branch per topic; merge it when the topic is done.** Do not keep building
+  the next piece of work on a finished branch — the name stops describing the
+  contents, and the merge commit stops meaning anything. Merge, then branch fresh.
 
 ## Dormant / intentional oddities
 
