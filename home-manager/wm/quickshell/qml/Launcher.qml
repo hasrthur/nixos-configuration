@@ -28,6 +28,11 @@ PanelWindow {
 
     readonly property string route: stack.length > 0 ? stack[stack.length - 1] : ""
 
+    // Declaration order for the search tiebreak. builtins.toJSON sorts the
+    // attrset, so this is menu.nix's ids alphabetically — stable across builds,
+    // which is what the tiebreak needs it to be.
+    readonly property var routeIds: Object.keys(MenuTree.routes)
+
     readonly property int rowsHeight: Math.min(rows.length, Theme.launcherMaxRows) * Theme.launcherRowHeight
                                       + Theme.menuPadding
 
@@ -82,48 +87,135 @@ PanelWindow {
         for (const entry of DesktopEntries.applications?.values ?? []) {
             if (entry.noDisplay) continue;
             if (root.hiddenIds[entry.id] === true) continue;
+            // A generic name and the desktop Keywords are searchable but never
+            // shown, which is how "browser" finds Firefox. Omarchy folds both
+            // into the aliases of the app row for the same reason.
+            const aliases = entry.genericName ? [entry.genericName] : [];
             out.push({
                 id: "app:" + entry.name,
                 icon: entry.icon ?? "",
                 label: entry.name,
                 action: "",
                 provider: "",
-                app: entry
+                app: entry,
+                aliases: aliases.concat(entry.keywords ?? []),
+                description: entry.genericName ?? "",
+                // Apps hang off the apps route, so they sit one level below it.
+                depth: 2,
+                order: out.length
             });
         }
         out.sort((a, b) => a.label.localeCompare(b.label));
         return out;
     }
 
+    // Search ranking, ported from Omarchy's MenuModel.js.
+    //
+    // Not fuzzy, deliberately: a term has to appear as a substring of the row's
+    // name text or as a whole word in its description, and ranking is fixed
+    // tiers broken by depth and then declaration order. Nothing is learned from
+    // use. Walker, which Omarchy dropped, had both a subsequence matcher and
+    // frecency; a curated tree is worth more than either here, because
+    // Super+Space, n, Enter has to land on the same row every time.
+    function searchableToken(value) {
+        return String(value ?? "").replace(/[._-]+/g, " ");
+    }
+
+    // Everything a term may match as a substring: the label, the last id segment
+    // (so "generations" finds nix.generations even though its label does not say
+    // it), and an app's generic name and keywords.
+    function nameSearchText(row) {
+        const leaf = root.segments(row.id).pop() ?? "";
+        return [row.label, root.searchableToken(leaf), (row.aliases ?? []).join(" ")]
+            .join(" ").toLowerCase();
+    }
+
+    function termInWords(term, text) {
+        return String(text ?? "").toLowerCase().split(/\s+/).indexOf(term) >= 0;
+    }
+
+    // A description matches by whole word only. It is prose, so a substring hit
+    // would put half the tree behind any common run of letters.
+    function descriptionMatches(needle, text) {
+        return needle.split(/\s+/).every(term => term === "" || root.termInWords(term, text));
+    }
+
+    function matchesQuery(row, terms) {
+        const nameText = root.nameSearchText(row);
+        const description = String(row.description ?? "").toLowerCase();
+        return terms.every(term => nameText.indexOf(term) >= 0
+                                   || root.termInWords(term, description));
+    }
+
+    // Lower is better, as in Omarchy: the tier is multiplied out so depth and
+    // order can only ever break a tie inside one.
+    function searchScore(row, needle) {
+        const label = row.label.toLowerCase();
+        const nameText = root.nameSearchText(row);
+        const description = String(row.description ?? "").toLowerCase();
+        const isApp = row.app !== null;
+        const isMenu = !isApp && row.action === "" && row.provider === "";
+
+        let score = 80;
+        if (label === needle)
+            score = row.depth === 1 ? 2 : 0;
+        // An installed app whose name carries the query as a whole word — "code"
+        // for Visual Studio Code — beats a menu row labelled exactly that.
+        else if (isApp && label.split(/\s+/).indexOf(needle) >= 0)
+            score = 0;
+        else if (label.indexOf(needle) === 0)
+            score = 10;
+        else if (label.indexOf(needle) >= 0)
+            score = 30;
+        else if (nameText.indexOf(needle) >= 0)
+            score = 40;
+        else if (root.descriptionMatches(needle, description))
+            score = 60;
+
+        // A submenu is a step towards something rather than the thing, so an
+        // equal match on one loses to a row that acts.
+        if (isMenu) score -= 2;
+        // App rows are appended after every menu row, so they lose the order
+        // tiebreak on an equal match. Outrank that, but stay inside the tier.
+        if (isApp) score -= 5;
+
+        return score * 1000 + row.depth * 25 + row.order;
+    }
+
     // Searching looks across everything, not just the current level: typing is
     // how you avoid navigating at all, so scoping it to one submenu would make
-    // the tree the only way through.
+    // the tree the only way through. Submenus are results too — selecting one
+    // opens it, which is how a search can end somewhere it cannot act.
     function searchRows(text) {
-        const needle = text.toLowerCase();
+        const needle = text.toLowerCase().trim();
+        const terms = needle.split(/\s+/).filter(term => term !== "");
         const out = [];
 
-        for (const id in MenuTree.routes) {
+        for (let i = 0; i < root.routeIds.length; i++) {
+            const id = root.routeIds[i];
             const entry = MenuTree.routes[id];
-            // Submenus are not results — there is nothing to run.
-            if (!entry.action && !entry.provider) continue;
-            const label = entry.label ?? id;
-            const path = root.segments(id).slice(0, -1).join(" / ");
-            if (!label.toLowerCase().includes(needle) && !id.toLowerCase().includes(needle)) continue;
-            out.push({
+            const row = {
                 id: id,
                 icon: entry.icon ?? "",
-                label: label,
-                detail: path,
+                label: entry.label ?? id,
+                detail: root.segments(id).slice(0, -1).join(" / "),
                 action: entry.action ?? "",
                 provider: entry.provider ?? "",
-                app: null
-            });
+                app: null,
+                aliases: [],
+                description: entry.description ?? "",
+                depth: root.segments(id).length,
+                order: i
+            };
+            if (root.matchesQuery(row, terms)) out.push(row);
         }
 
         for (const row of root.appRows()) {
-            if (!row.label.toLowerCase().includes(needle)) continue;
-            out.push(row);
+            if (root.matchesQuery(row, terms)) out.push(row);
         }
+
+        for (const row of out) row.score = root.searchScore(row, needle);
+        out.sort((a, b) => a.score - b.score);
         return out;
     }
 
