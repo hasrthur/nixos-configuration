@@ -22,14 +22,19 @@ Item {
         Workspaces {}
     }
 
-    Row {
-        id: center
+    // The clock is the anchor, not the centre section: widgets that come and go
+    // (the indicators cluster) hang off it, so the clock never shifts under them.
+    Clock {
+        id: clock
 
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.verticalCenter: parent.verticalCenter
-        spacing: Theme.widgetGap
+    }
 
-        Clock {}
+    Indicators {
+        anchors.right: clock.left
+        anchors.rightMargin: Theme.edgeGap
+        anchors.verticalCenter: parent.verticalCenter
     }
 
     Row {

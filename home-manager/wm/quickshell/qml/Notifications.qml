@@ -32,9 +32,6 @@ PanelWindow {
     // act, not an interruption, so it does not need to get out of the way fast.
     readonly property int replayDuration: 20000
 
-    // Silencing hides the popup, not the notification: it stays tracked, so
-    // dismissAll and invokeLast still reach it, and it appears when silence lifts.
-    property bool silenced: false
 
     // Replayed history entries, shown as cards until their own timer expires.
     property var replayed: []
@@ -181,7 +178,7 @@ PanelWindow {
 
     readonly property var shown: {
         const list = server.trackedNotifications?.values ?? [];
-        if (!root.silenced) return list;
+        if (!Toggles.dnd) return list;
         return list.filter(n => root.bypassesSilence(n));
     }
 
@@ -273,9 +270,43 @@ PanelWindow {
             return "ok";
         }
 
+        // Silencing hides the popup, not the notification: it stays tracked, so
+        // dismissAll and invokeLast still reach it, and it appears when silence
+        // lifts. State lives in qs.Commons.Toggles so the bar indicator sees it
+        // too, and so it survives a restart.
         function toggleSilence(): string {
-            root.silenced = !root.silenced;
-            return root.silenced ? "silenced" : "audible";
+            Toggles.toggleDnd();
+            return Toggles.dnd ? "silenced" : "audible";
+        }
+
+        function dndState(): string {
+            return Toggles.dnd ? "on" : "off";
+        }
+
+        function setDnd(value: string): string {
+            const on = value === "on" || value === "true" || value === "1";
+            const off = value === "off" || value === "false" || value === "0";
+            if (!on && !off) return "usage: setDnd <on|off>";
+
+            Toggles.setDnd(on);
+            return Toggles.dnd ? "on" : "off";
+        }
+
+        // Lets a script supersede its own earlier toast.
+        function dismiss(summary: string): string {
+            const list = (server.trackedNotifications?.values ?? []).slice();
+            let hits = 0;
+            for (const n of list) {
+                if ((n.summary ?? "") === summary) {
+                    n.dismiss();
+                    hits++;
+                }
+            }
+            return String(hits);
+        }
+
+        function ping(): string {
+            return "ok";
         }
 
         function showHistory(): string {
