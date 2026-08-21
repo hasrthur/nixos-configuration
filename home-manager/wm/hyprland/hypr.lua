@@ -8,6 +8,16 @@ hl.config({
 
     decoration = {
         rounding = 5,
+
+        -- Enabled for the launcher's backdrop, which is the only thing that asks
+        -- for it: the layer rule below is what actually turns it on for that one
+        -- surface. Omarchy disables blur outright, so this is a deliberate
+        -- divergence rather than an oversight.
+        blur = {
+            enabled = true,
+            size = 5,
+            passes = 1,
+        },
     },
 
     input = {
