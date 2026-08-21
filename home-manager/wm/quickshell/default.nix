@@ -50,6 +50,8 @@ let
         // Distance between the bar and a popup hanging off it.
         readonly property int menuGap: 5
 
+        readonly property int notificationWidth: 380
+
         readonly property int osdMargin: 120
         readonly property int osdPadding: 16
         readonly property int osdGap: 16
