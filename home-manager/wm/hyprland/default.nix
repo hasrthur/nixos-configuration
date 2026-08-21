@@ -4,8 +4,6 @@
   home.packages = with pkgs; [
     hyprcursor
     hyprland-per-window-layout
-
-    networkmanagerapplet
   ];
 
   wayland.windowManager.hyprland = {
