@@ -8,6 +8,8 @@ import Quickshell
 import qs.Commons
 
 ShellRoot {
+    Osd {}
+
     // One bar per output. Quickshell rebuilds the set as monitors come and go.
     Variants {
         model: Quickshell.screens
