@@ -34,6 +34,7 @@
       "bindings.keyboard_layouts" = ./configs/bindings/keyboard_layouts.lua;
       "bindings.launcher" = ./configs/bindings/launcher.lua;
       "bindings.media" = ./configs/bindings/media.lua;
+      "bindings.notifications" = ./configs/bindings/notifications.lua;
     };
 
     xdph.settings.screencopy = {

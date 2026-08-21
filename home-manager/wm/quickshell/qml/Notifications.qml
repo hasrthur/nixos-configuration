@@ -57,6 +57,27 @@ PanelWindow {
         if (list.length > 0) list[list.length - 1].dismiss();
     }
 
+    // Silencing keeps notifications off screen without dropping them: they are
+    // still tracked, so dismissAll and invokeLast still reach them. Omarchy lets a
+    // narrow set through — user-action confirmations and critical alerts from
+    // notify-send, because chat apps set their own appName and so fall outside it.
+    property bool silenced: false
+
+    function bypassesSilence(notification) {
+        return notification.urgency === NotificationUrgency.Critical
+            && (notification.appName ?? "") === "notify-send";
+    }
+
+    function invokeLast() {
+        const list = server.trackedNotifications?.values ?? [];
+        if (list.length === 0) return;
+
+        const newest = list[list.length - 1];
+        const action = root.defaultAction(newest) ?? root.buttonActions(newest)[0] ?? null;
+        if (action) action.invoke();
+        else newest.dismiss();
+    }
+
     function dismissAll() {
         // Copy first: dismissing mutates the model being walked.
         const list = (server.trackedNotifications?.values ?? []).slice();
@@ -84,7 +105,13 @@ PanelWindow {
     implicitWidth: Theme.notificationWidth
     implicitHeight: Math.max(1, stack.implicitHeight)
     color: "transparent"
-    visible: (server.trackedNotifications?.values ?? []).length > 0
+    readonly property var shown: {
+        const list = server.trackedNotifications?.values ?? [];
+        if (!root.silenced) return list;
+        return list.filter(n => root.bypassesSilence(n));
+    }
+
+    visible: shown.length > 0
 
     NotificationServer {
         id: server
@@ -96,6 +123,8 @@ PanelWindow {
         onNotification: function (notification) {
             notification.tracked = true;
         }
+
+        // Silence hides the popup rather than the notification.
 
         keepOnReload: false
         bodySupported: true
@@ -117,6 +146,16 @@ PanelWindow {
             root.dismissAll();
             return "ok";
         }
+
+        function invokeLast(): string {
+            root.invokeLast();
+            return "ok";
+        }
+
+        function toggleSilence(): string {
+            root.silenced = !root.silenced;
+            return root.silenced ? "silenced" : "audible";
+        }
     }
 
     Column {
@@ -126,7 +165,7 @@ PanelWindow {
         spacing: Theme.menuGap
 
         Repeater {
-            model: server.trackedNotifications
+            model: root.shown
 
             Rectangle {
                 id: card
